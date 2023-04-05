@@ -10,6 +10,8 @@ import '../public/Toaster/toastr.js';
 // 全局引入dataformat
 import "../public/static/dateformat.js"
 
+import "../public/static/jquery.thooClock.js"
+
 //
 // import axios from 'axios'
 // App.config.globalProperties.$axios = axios

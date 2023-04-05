@@ -82,12 +82,12 @@
           <div class="Clock" @click="clickClock">{{ Time1 }} <br> {{ Time2 }}{{ CWeek }}</div>
           <div class="ClockList" v-show="showClockList">			
             <span class="pointer"></span>			
-            <div class="now"><canvas width="150" height="150"></canvas></div>			
+            <div class="now"></div>			
             <div class="today">
-                <div>{{year}}&nbsp;{{ CWeek }}</div><div class="day">4</div><div style="line-height: 22px;">农历闰二月十四<br>癸卯年乙卯月壬辰日<br>兔年&nbsp;</div>
+                <div>{{year}}&nbsp;{{ CWeek }}</div><div class="day">{{ day }}</div><div style="line-height: 22px;">{{ lunar }}<br>{{ lunarYear }}<br>{{ zodiac }}&nbsp;<br>{{ solarTerm }}</div>
             </div>		
           </div>
-          <div class="Picture" @click="clickUserMenu"><img src="../assets/images/plus.png"></div>
+          <div class="Picture" @click="clickUserMenu"><img src="../assets/images/user/new.png"></div>
           <div class="UserMenu" v-show="showUserMenu">			
             <span class="pointer"></span>			
               <ul>				
@@ -118,11 +118,18 @@
 <script setup>
     import { ref , onMounted} from 'vue'
     import { getLunar } from 'chinese-lunar-calendar'
+    import $ from "jquery";
 
     const Time1=ref();
     const Time2=ref();
     const year=ref();
+    const month=ref();
+    const day=ref();
     const CWeek=ref();
+    const lunar=ref();
+    const lunarYear=ref();
+    const zodiac=ref();
+    const solarTerm=ref();
 
     const showStartMenu=ref(false);
     const showAppMenu=ref(false)
@@ -215,19 +222,33 @@
         var AMorPM = hour<12?'上午':'下午';
         var cHour = hour>12?(hour-12):hour;
         var cMin = min<10?'0'+min:min;
-        var month = now.getMonth() + 1;
-        var day = now.getDate();
+        month.value = now.getMonth() + 1;
+        day.value = now.getDate();
         CWeek.value = now.getSysWeek();
         Time1.value=AMorPM+cHour+':'+cMin;
-        Time2.value=month+'月'+day+'日'+'  ';
+        Time2.value=month.value+'月'+day.value+'日'+'  ';
     }
     function initClockList(){
         var now = new Date();
-        // var cal = calendar.solar2lunar();
         year.value = now.Format("yyyy-MM-dd");
         // 获取农历
         var getLunarDay = getLunar(2023, 4, 5)
         console.log(getLunarDay)
+        lunar.value = '农历'+getLunarDay.dateStr;
+        lunarYear.value = getLunarDay.lunarYear;
+        zodiac.value = getLunarDay.zodiac+'年';
+        solarTerm.value = getLunarDay.solarTerm+'节';
+        $(".ClockList .now").thooClock({
+                size: 150,
+                dialColor: "#1099EC",
+                secondHandColor: "#DDBD45",
+                minuteHandColor: "#1199ec",
+                hourHandColor: "#1199ec",
+                alarmHandColor: "#D84C49",
+                alarmHandTipColor: "#DDBD45",
+                showNumerals: !0,
+                brandText: "ThingsLabs"
+            });
     }
 
     onMounted(()=>{
@@ -876,11 +897,11 @@
 }
 .taskbar .TaskStatus .ClockList .today {
     position: absolute;
-    top: 0;
+    top: -5px;
     left: 150px;
-    height: 150px;
+    height: 180px;
     width: 150px;
-    padding: 15px;
+    padding: 10px;
     text-align: center;
 }
 .taskbar .TaskStatus .ClockList .day {
