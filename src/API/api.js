@@ -7,9 +7,13 @@ import axios from "axios";
 export function getTodayPic(url){
     return axios.get(url);
 }
+export function getCityList(url){
+    return axios.get(url);
+}
 
 export default {
-    getTodayPic
+    getTodayPic,
+    getCityList
 }
 
 

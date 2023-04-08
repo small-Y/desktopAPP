@@ -61,10 +61,37 @@
           <div class="WeatherList" v-show="showWeatherList">			
             <span class="pointer"></span>			
             <div class="today">
-              <ul></ul>
+              <ul v-show="ifShowWeatherListToday">
+                <span class="weatherCity">{{ weatherCity }}</span>
+                <div class="weatherIcon"><img :src="require('@/assets/images/weatherImg/'+weatherTodayImg+'.png')"></div>
+                <span class="weatheriInfo">{{ temp }}℃</span>	
+                <span class="weatherFeelsLike">{{ weatherFeelsLike }}</span>
+                <span class="weatherText">{{ weatherText }}</span>
+                <span class="weatherWindDir">{{ weatherWindDir }}</span>
+                <span class="weatherHumidity">{{ weatherHumidity }}</span>
+              </ul>
             </div>			
             <div class="future">
-              <ul></ul>
+              <ul v-show="ifShowWeatherList">
+                <li>
+                    <span class="weatherBoxTitle">今天</span>
+                    <div class="weatherBoxImg"><img :src="require('@/assets/images/weatherImg/'+weatherTodayImg+'.png')"></div>
+                    <div class="weatherBoxTemp">{{ weatherTodayTempMin }}°/{{ weatherTodayTempMax }}°</div>
+                    <div class="weatherBoxText">{{ weatherTodayTemptextDay }}</div>
+                </li>
+                <li>
+                    <span class="weatherBoxTitle">明天</span>
+                    <div class="weatherBoxImg"><img :src="require('@/assets/images/weatherImg/'+weatherMingImg+'.png')"></div>
+                    <div class="weatherBoxTemp">{{ weatherMingTempMin }}°/{{ weatherMingTempMax }}°</div>
+                    <div class="weatherBoxText">{{ weatherMingTemptextDay }}</div>
+                </li>
+                <li>
+                    <span class="weatherBoxTitle">后天</span>
+                    <div class="weatherBoxImg"><img :src="require('@/assets/images/weatherImg/'+weatherHouImg+'.png')"></div>
+                    <div class="weatherBoxTemp">{{ weatherHouTempMin }}°/{{ weatherHouTempMax }}°</div>
+                    <div class="weatherBoxText">{{ weatherHouTemptextDay }}</div>
+                </li>
+              </ul>
             </div>		
           </div>
           <div class="Search" v-show="showSearch">
@@ -75,8 +102,8 @@
             <div class="number" style="display: none;">0</div>
           </div>
           <div class="Weather" @click="clickWeather">			
-            <div class="icon"><img src="../assets/images/Weather/99.png"></div>			
-            <div class="info">—℃</div>		
+            <div class="icon"><img :src="require('@/assets/images/Weather/'+weatherPng+'.png')"></div>			
+            <div class="info">{{ temp }}℃</div>		
           </div>
           <div class="Sayma" @click="clickSayma"><img src="../assets/images/task.png"></div>
           <div class="Clock" @click="clickClock">{{ Time1 }} <br> {{ Time2 }}{{ CWeek }}</div>
@@ -84,7 +111,7 @@
             <span class="pointer"></span>			
             <div class="now"></div>			
             <div class="today">
-                <div>{{year}}&nbsp;{{ CWeek }}</div><div class="day">{{ day }}</div><div style="line-height: 22px;">{{ lunar }}<br>{{ lunarYear }}<br>{{ zodiac }}&nbsp;<br>{{ solarTerm }}</div>
+                <div>{{ymd}}&nbsp;{{ CWeek }}</div><div class="day">{{ day }}</div><div style="line-height: 22px;">{{ lunar }}<br>{{ lunarYear }}<br>{{ zodiac }}&nbsp;<br>{{ solarTerm }}</div>
             </div>		
           </div>
           <div class="Picture" @click="clickUserMenu"><img src="../assets/images/user/new.png"></div>
@@ -106,7 +133,9 @@
         <div id="desktopFrame1_Panel_Task_ShowDesktop" class="TaskShowDesktop"></div>
       </div>
       <div id="desktopFrame1_Panel_Home" class="homepanel" @click="clickDesk">
-
+        <div id="desktopFrame1_Panel_Dock" class="dock" style="display: block;">
+            <div class="apps" style="min-width: 320px;"><div class="l"></div><ul></ul> <div class="r"></div></div><div class="dragapp"></div>
+        </div>
       </div>
       <div id="desktopFrame1_Panel_Widget" class="homewidget">
 
@@ -115,146 +144,337 @@
   </div>
 </template>
 
-<script setup>
+<script>
     import { ref , onMounted} from 'vue'
     import { getLunar } from 'chinese-lunar-calendar'
     import $ from "jquery";
+    import {getCityList} from '../API/api.js'
+    export default {
+        setup(){
+            const Time1=ref();
+            const Time2=ref();
+            const year=ref();
+            const ymd=ref();
+            const month=ref();
+            const day=ref();
+            const CWeek=ref();
+            const lunar=ref();
+            const lunarYear=ref();
+            const zodiac=ref();
+            const solarTerm=ref();
 
-    const Time1=ref();
-    const Time2=ref();
-    const year=ref();
-    const month=ref();
-    const day=ref();
-    const CWeek=ref();
-    const lunar=ref();
-    const lunarYear=ref();
-    const zodiac=ref();
-    const solarTerm=ref();
+            const temp=ref('—');
+            const weatherPng=ref(99);
+            const weatherCity=ref('北京');
+            const weatherText=ref();
+            const weatherWindDir=ref();
+            const weatherFeelsLike=ref();
+            const weatherHumidity=ref();
+            const weatherTodayImg=ref(100);
+            const weatherTodayTempMin=ref();
+            const weatherTodayTempMax=ref();
+            const weatherTodayTemptextDay=ref();
+            const weatherMingImg=ref(100);
+            const weatherMingTempMin=ref();
+            const weatherMingTempMax=ref();
+            const weatherMingTemptextDay=ref();
+            const weatherHouImg=ref(100);
+            const weatherHouTempMin=ref();
+            const weatherHouTempMax=ref();
+            const weatherHouTemptextDay=ref();
+            const ifShowWeatherList=ref(false);
+            const ifShowWeatherListToday=ref(false);
 
-    const showStartMenu=ref(false);
-    const showAppMenu=ref(false)
-    const showThemeMenu=ref(false);
-    const showWeatherList=ref(false);
-    const showUserMenu=ref(false);
-    const showClockList=ref(false);
-    const showSearch=ref(false)
+            const showStartMenu=ref(false);
+            const showAppMenu=ref(false)
+            const showThemeMenu=ref(false);
+            const showWeatherList=ref(false);
+            const showUserMenu=ref(false);
+            const showClockList=ref(false);
+            const showSearch=ref(false)
 
-    function clickDesk() {
-        showStartMenu.value=false
-        showAppMenu.value=false
-        showThemeMenu.value=false
-        showSearch.value=false
-        showWeatherList.value=false
-        showUserMenu.value=false
-        showClockList.value=false
-    }
-    function clickStartMenu() {
-        showStartMenu.value=!showStartMenu.value
-        showAppMenu.value=false
-        showThemeMenu.value=false
-        showSearch.value=false
-        showWeatherList.value=false
-        showUserMenu.value=false
-        showClockList.value=false
-    }
-    function clickAppMenu() {
-        showAppMenu.value=!showAppMenu.value
-        showStartMenu.value=false
-        showThemeMenu.value=false
-        showSearch.value=false
-        showWeatherList.value=false
-        showUserMenu.value=false
-        showClockList.value=false
-    }
-    function clickThemeMenu() {
-        showThemeMenu.value=!showThemeMenu.value
-        showStartMenu.value=false
-        showAppMenu.value=false
-        showSearch.value=false
-        showWeatherList.value=false
-        showUserMenu.value=false
-        showClockList.value=false
-    }
-    function clickSayma() {
-        showSearch.value=!showSearch.value
-        showStartMenu.value=false
-        showAppMenu.value=false
-        showThemeMenu.value=false
-        showWeatherList.value=false
-        showUserMenu.value=false
-        showClockList.value=false
-    }
-    function clickWeather() {
-        showWeatherList.value=!showWeatherList.value
-        showStartMenu.value=false
-        showAppMenu.value=false
-        showThemeMenu.value=false
-        showSearch.value=false
-        showUserMenu.value=false
-        showClockList.value=false
-    }
-    function clickUserMenu() {
-        showUserMenu.value=!showUserMenu.value
-        showStartMenu.value=false
-        showAppMenu.value=false
-        showThemeMenu.value=false
-        showSearch.value=false
-        showWeatherList.value=false
-        showClockList.value=false
-    }
-    function clickClock() {
-        showClockList.value=!showClockList.value
-        showStartMenu.value=false
-        showAppMenu.value=false
-        showThemeMenu.value=false
-        showSearch.value=false
-        showWeatherList.value=false
-        showUserMenu.value=false
-    }
-    function clickMessage() {
+            //阻止右键点击事件
+            // document.oncontextmenu = function(){
+            //     return false;
+            // }
 
-    }
+            document.addEventListener('mousedown',function(e){
+                if(e.button==2){
+                    return false;
+                }
+            })
 
-    function initClock(){
-        var now = new Date();
-        var hour = now.getHours();
-        var min = now.getMinutes();
-        var AMorPM = hour<12?'上午':'下午';
-        var cHour = hour>12?(hour-12):hour;
-        var cMin = min<10?'0'+min:min;
-        month.value = now.getMonth() + 1;
-        day.value = now.getDate();
-        CWeek.value = now.getSysWeek();
-        Time1.value=AMorPM+cHour+':'+cMin;
-        Time2.value=month.value+'月'+day.value+'日'+'  ';
-    }
-    function initClockList(){
-        var now = new Date();
-        year.value = now.Format("yyyy-MM-dd");
-        // 获取农历
-        var getLunarDay = getLunar(2023, 4, 5)
-        console.log(getLunarDay)
-        lunar.value = '农历'+getLunarDay.dateStr;
-        lunarYear.value = getLunarDay.lunarYear;
-        zodiac.value = getLunarDay.zodiac+'年';
-        solarTerm.value = getLunarDay.solarTerm+'节';
-        $(".ClockList .now").thooClock({
-                size: 150,
-                dialColor: "#1099EC",
-                secondHandColor: "#DDBD45",
-                minuteHandColor: "#1199ec",
-                hourHandColor: "#1199ec",
-                alarmHandColor: "#D84C49",
-                alarmHandTipColor: "#DDBD45",
-                showNumerals: !0,
-                brandText: "ThingsLabs"
-            });
-    }
+            function clickDesk() {
+                showStartMenu.value=false
+                showAppMenu.value=false
+                showThemeMenu.value=false
+                showSearch.value=false
+                showWeatherList.value=false
+                showUserMenu.value=false
+                showClockList.value=false
+            }
+            function clickStartMenu() {
+                showStartMenu.value=!showStartMenu.value
+                showAppMenu.value=false
+                showThemeMenu.value=false
+                showSearch.value=false
+                showWeatherList.value=false
+                showUserMenu.value=false
+                showClockList.value=false
+            }
+            function clickAppMenu() {
+                showAppMenu.value=!showAppMenu.value
+                showStartMenu.value=false
+                showThemeMenu.value=false
+                showSearch.value=false
+                showWeatherList.value=false
+                showUserMenu.value=false
+                showClockList.value=false
+            }
+            function clickThemeMenu() {
+                showThemeMenu.value=!showThemeMenu.value
+                showStartMenu.value=false
+                showAppMenu.value=false
+                showSearch.value=false
+                showWeatherList.value=false
+                showUserMenu.value=false
+                showClockList.value=false
+            }
+            function clickSayma() {
+                showSearch.value=!showSearch.value
+                showStartMenu.value=false
+                showAppMenu.value=false
+                showThemeMenu.value=false
+                showWeatherList.value=false
+                showUserMenu.value=false
+                showClockList.value=false
+            }
+            function clickWeather() {
+                showWeatherList.value=!showWeatherList.value
+                showStartMenu.value=false
+                showAppMenu.value=false
+                showThemeMenu.value=false
+                showSearch.value=false
+                showUserMenu.value=false
+                showClockList.value=false
+            }
+            function clickUserMenu() {
+                showUserMenu.value=!showUserMenu.value
+                showStartMenu.value=false
+                showAppMenu.value=false
+                showThemeMenu.value=false
+                showSearch.value=false
+                showWeatherList.value=false
+                showClockList.value=false
+            }
+            function clickClock() {
+                showClockList.value=!showClockList.value
+                showStartMenu.value=false
+                showAppMenu.value=false
+                showThemeMenu.value=false
+                showSearch.value=false
+                showWeatherList.value=false
+                showUserMenu.value=false
+            }
+            // function clickMessage() {
 
-    onMounted(()=>{
-        initClock();
-        initClockList();
-    })
+            // }
+
+            function initClock(){
+                var now = new Date();
+                var hour = now.getHours();
+                var min = now.getMinutes();
+                var AMorPM = hour<12?'上午':'下午';
+                var cHour = hour>12?(hour-12):hour;
+                var cMin = min<10?'0'+min:min;
+                month.value = now.getMonth() + 1;
+                day.value = now.getDate();
+                CWeek.value = now.getSysWeek();
+                Time1.value=AMorPM+cHour+':'+cMin;
+                Time2.value=month.value+'月'+day.value+'日'+'  ';
+            }
+            function initClockList(){
+                var now = new Date();
+                year.value = now.getFullYear();
+                ymd.value = now.Format("yyyy-MM-dd");
+                // 获取农历
+                var getLunarDay = getLunar(year.value, month.value, day.value)
+                // console.log(getLunarDay)
+                lunar.value = '农历'+getLunarDay.dateStr;
+                lunarYear.value = getLunarDay.lunarYear;
+                zodiac.value = getLunarDay.zodiac+'年';
+                solarTerm.value = getLunarDay.solarTerm?getLunarDay.solarTerm+'节':'';
+                $(".ClockList .now").thooClock({
+                        size: 150,
+                        dialColor: "#1099EC",
+                        secondHandColor: "#DDBD45",
+                        minuteHandColor: "#1199ec",
+                        hourHandColor: "#1199ec",
+                        alarmHandColor: "#D84C49",
+                        alarmHandTipColor: "#DDBD45",
+                        showNumerals: !0,
+                        brandText: "ThingsLabs"
+                    });
+            }
+            function getCityTag(){
+                if(!weatherCity.value){
+                    // 172.29.77.106
+                    // 192.168.1.109
+                    // 获取IP
+                    var ip = window.location.host.split(":")[0];
+                    // console.log("ip：",ip)
+                    if(ip.split('.')[0]=='172'||ip.split('.')[0]=='192'){
+                        ip='myip';
+                    }
+                    // 获取城市
+                    var urlip = "/apil";
+                    $.ajax({
+                        url:urlip,
+                        type:'POST',
+                        data:{
+                            ip: ip,
+                            accessKey: 'alibaba-inc'
+                        },
+                        success:function(res){
+                            console.log(res);
+                        }
+                    })
+                }
+
+                // 获取城市
+                getCityList('deskData/CityList.csv').then(res=>{
+                    var cityTag='';
+                    var csvList = res.data.split('\r\n')
+                    for (let i = 0; i < csvList.length; i++) {
+                        const ele = csvList[i];
+                        if(ele.indexOf(weatherCity.value)!=-1){
+                            if(ele.split(',')[2]==weatherCity.value){
+                                cityTag=ele.split(',')[0];
+                            }
+                        }
+                    }
+                    initWeather(cityTag);
+                },err=>{
+                    console.log(err);
+                
+                });
+            }
+            function initWeather(cityTag){
+                // 获取今天的天气
+                var urlnow = 'https://devapi.qweather.com/v7/weather/now?location='+cityTag+'&key=3b94e0eed8624dd6867f5b441fec64e5'
+                $.ajax({
+                    url:urlnow,
+                    type:'GET',
+                    success:function(res){
+                        if(res.code==200){
+                            ifShowWeatherListToday.value=true;
+                            temp.value=res.now.temp
+                            weatherPng.value=res.now.icon
+                            weatherText.value=res.now.text
+                            weatherWindDir.value=res.now.windDir
+                            weatherFeelsLike.value='体感温度'+res.now.feelsLike+'℃'
+                            weatherHumidity.value='湿度'+res.now.humidity+'%'
+                        }else{
+                            ifShowWeatherListToday.value=false;
+                            weatherPng.value='99';
+                        }
+                    }
+                })
+                // 获取三天的天气
+                var url3d = 'https://devapi.qweather.com/v7/weather/3d?location='+cityTag+'&key=3b94e0eed8624dd6867f5b441fec64e5'
+                $.ajax({
+                    url:url3d,
+                    type:'GET',
+                    success:function(res){
+                        if(res.code==200){
+                            ifShowWeatherList.value=true
+                            // 今天
+                            weatherTodayImg.value=res.daily[0].iconDay;
+                            weatherTodayTempMin.value=res.daily[0].tempMin;
+                            weatherTodayTempMax.value=res.daily[0].tempMax;
+                            weatherTodayTemptextDay.value=res.daily[0].textDay;
+                            // 明天
+                            weatherMingImg.value=res.daily[1].iconDay;
+                            weatherMingTempMin.value=res.daily[1].tempMin;
+                            weatherMingTempMax.value=res.daily[1].tempMax;
+                            weatherMingTemptextDay.value=res.daily[1].textDay;
+                            // 后天
+                            weatherHouImg.value=res.daily[2].iconDay;
+                            weatherHouTempMin.value=res.daily[2].tempMin;
+                            weatherHouTempMax.value=res.daily[2].tempMax;
+                            weatherHouTemptextDay.value=res.daily[2].textDay;
+                        }else{
+                            ifShowWeatherList.value=false
+                        }
+                    }
+                })
+            }
+
+            onMounted(()=>{
+                initClock();
+                initClockList();
+                getCityTag();
+            })
+
+            return {
+                showStartMenu,
+                showAppMenu,
+                showThemeMenu,
+                showWeatherList,
+                showUserMenu,
+                showClockList,
+                showSearch,
+                // 
+                Time1,
+                Time2,
+                year,
+                ymd,
+                month,
+                day,
+                CWeek,
+                lunar,
+                lunarYear,
+                zodiac,
+                solarTerm,
+                //
+                temp,
+                weatherPng,
+                weatherCity,
+                weatherText,
+                weatherWindDir,
+                weatherFeelsLike,
+                weatherHumidity,
+                weatherTodayImg,
+                weatherTodayTempMin,
+                weatherTodayTempMax,
+                weatherTodayTemptextDay,
+                weatherMingImg,
+                weatherMingTempMin,
+                weatherMingTempMax,
+                weatherMingTemptextDay,
+                weatherHouImg,
+                weatherHouTempMin,
+                weatherHouTempMax,
+                weatherHouTemptextDay,
+                ifShowWeatherList,
+                ifShowWeatherListToday,
+                // 
+                clickDesk,
+                clickStartMenu,
+                clickAppMenu,
+                clickThemeMenu,
+                clickSayma,
+                clickWeather,
+                clickUserMenu,
+                clickClock,
+                // clickMessage,
+                initClock,
+                initClockList,
+                getCityTag,
+                initWeather
+            }
+        }
+    }
 </script>
 
 <style>
@@ -694,12 +914,15 @@
     top: 45px;
     right: 60px;
     height: 270px;
-    width: 350px;
+    width: 250px;
     padding: 5px 15px;
-    color: #aaa;
+    color: #ccc;
     font-size: 10pt;
     background: #fafafa;
-    border: 1px solid #ddd;
+    background: url(../assets/images/weatherImg/100n.png);
+    background-repeat: no-repeat;
+    background-position: left top;
+    background-size: auto 100%;
     -moz-box-shadow: 5px 5px 30px rgba(0,0,0,0.5);
     -webkit-box-shadow: 5px 5px 30px rgba(0,0,0,0.5);
     box-shadow: 5px 5px 30px rgba(0,0,0,0.5);
@@ -724,22 +947,84 @@
 }
 .taskbar .TaskStatus .WeatherList .today {
     border-bottom: 1px solid #ccc;
+    height: 125px;
 }
-.taskbar .TaskStatus .WeatherList ul {
+.taskbar .TaskStatus .WeatherList .today ul {
     display: inline-block;
     padding: 0;
     margin: 0;
+    height: 125px;
 }
+.taskbar .TaskStatus .WeatherList .today ul .weatherCity{
+    position: relative;
+    top: 0px;
+    left: 10px;
+}
+.taskbar .TaskStatus .WeatherList .today ul .weatherIcon{
+    width: 48px;
+    height: 48px;
+    position: absolute;
+}
+.taskbar .TaskStatus .WeatherList .today ul .weatherIcon img{
+    width: 48px;
+    height: 48px;
+}
+.taskbar .TaskStatus .WeatherList .today ul .weatheriInfo{
+    position: relative;
+    top: 20px;
+    left: 45px;
+    font-size: 25px;
+}
+.taskbar .TaskStatus .WeatherList .today ul .weatherFeelsLike{
+    position: relative;
+    top: 80px;
+    left: -15px;
+}
+.taskbar .TaskStatus .WeatherList .today ul .weatherText{
+    position: relative;
+    top: 52px;
+    left: -70px;
+}
+.taskbar .TaskStatus .WeatherList .today ul .weatherWindDir{
+    position: relative;
+    top: 30px;
+    left: 15px;
+}
+.taskbar .TaskStatus .WeatherList .today ul .weatherHumidity{
+    position: absolute;
+    top: 70px;
+    right: 20px;
+    width: 60px;
+    display: inline-block;
+}
+
 .taskbar .TaskStatus .WeatherList .future {
     padding: 10px 0;
     text-align: center;
     font-size: 10.5pt;
-    color: #607D8B;
+    color: #ccc;
 }
-.taskbar .TaskStatus .WeatherList ul {
+.taskbar .TaskStatus .WeatherList .future ul {
     display: inline-block;
     padding: 0;
-    margin: 0;
+    margin: 0 10px;
+    display: flex;
+}
+.taskbar .TaskStatus .WeatherList .future ul li {
+    padding: 0;
+    margin: 0 0px;
+    height: 120px;
+    width: 330px;
+    list-style: none;
+}
+.taskbar .TaskStatus .WeatherList .future .weatherBoxImg{
+    width: 22px;
+    height: 22px;
+    margin: auto;
+}
+.taskbar .TaskStatus .WeatherList .future .weatherBoxImg img{
+    width: 22px;
+    height: 22px;
 }
 .taskbar .TaskStatus .Search {
     position: absolute;
@@ -995,6 +1280,49 @@
     left: 0;
     bottom: 0;
     right: 0;
+}
+.dock {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    font: normal 14px/1 Arial,Tahoma,微软雅黑;
+}
+.dock .apps {
+    position: relative;
+    z-index: 100;
+    display: inline-block;
+    padding: 0 10px;
+    background: url(../assets/images/desktop/dock-bg-m.png) repeat-x bottom;
+}
+.dock .apps .l {
+    left: -40px;
+    background: url(../assets/images/desktop/dock-bg-l.png) no-repeat right bottom;
+}
+.dock .apps .l, .dock .apps .r {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 40px;
+}
+.dock ul {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+}
+.dock .apps .r {
+    right: -40px;
+    background: url(../assets/images/desktop/dock-bg-r.png) no-repeat left bottom;
+}
+.dock .dragapp {
+    position: absolute;
+    z-index: 999999;
+    top: 0;
+    left: 0;
+    width: 70px;
+    height: 70px;
+    /* display: none; */
+    cursor: move;
 }
 
 
