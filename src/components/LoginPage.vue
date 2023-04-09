@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import {getTodayPic} from '../API/api.js'
+import {getTodayPic,getLogin} from '../API/api.js'
 import DeskTop from "./DeskTop";
 
 import $ from "jquery";
@@ -131,6 +131,21 @@ export default {
                 that.noDeskTop=!that.noDeskTop;
             }
         }
+        function oneTimeLogin() {
+            getLogin('api/Login').then(res=>{
+                console.log(res);
+                if(res.status){
+                    var data = res.data;
+                    if(data.loginStatus){
+                        console.log('已登录，进入桌面！')
+                        that.noDeskTop=false;
+                    }
+                }
+                },err=>{
+                    console.log(err);
+                
+            });
+        }
         function playSound(soundType) {
             var soundTag = document.getElementById(soundType+"_sound");
             soundTag.play()
@@ -149,6 +164,12 @@ export default {
             "showMethod": "fadeIn",//显示时的动画方式
             "hideMethod": "fadeOut"//消失时的动画方式
         }
+
+
+        oneTimeLogin();
+        setInterval(() => {
+            oneTimeLogin();
+        }, 3000);
     }
 }
 </script>
