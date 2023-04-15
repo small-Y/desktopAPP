@@ -1,50 +1,46 @@
 <template>
-    <div v-if="noDeskTop" ref="htm">
-        <div class="LoginPage" >
-            <div id="loginContainer" class="desktopLogin"> 
-                <div id="loginFrame" class="desktop">
-                    <div id="loginWrapper" class="loginWrapper">
-                        <img :src="require('@/assets/images/'+tadayPic)" onerror="this.style.display='none'">
-                    </div>
-                    <div id="loginPannelFrame" class="loginPannelFrame">
-                        <div id="loginFrame_Panel_Time" class="loginTime">16:52</div>
-                        <div id="loginFrame_Panel_Date" class="loginDate">4月1日 星期六</div>
-                        <div id="loginFrame_Panel_Load" class="loginLoading"></div>
-                        <div id="loginFrame_Panel_Form" class="loginForm" style="left: 50%; opacity: 1; transition-property: all; transition-duration: 0s; transition-timing-function: ease;">	
-                            <div class="loginTitle">欢迎</div>	
-                            <div class="loginsubTitle">回来，精彩有你 . . .</div>	
-                            <div class="loginUser">
-                                帐 号：<input type="text" v-model="userName" name="userName" id="userName" class="loginText" placeholder="请输入帐号" autocomplete="on" required="required">
-                            </div>	
-                            <div class="loginPass">
-                                口 令：<input type="password" v-model="password" name="passWord" id="passWord" class="loginText" placeholder="请输入口令" required="required">
-                            </div>	
-                            <div id="loginFrame_Panel_Info" class="loginInfo">&nbsp;</div>	
-                            <div id="loginFrame_Panel_Slider" class="loginSlider">
-                                <div class="track">
-                                    <div class="track-message" :style="{opacity:this.msgOpt}">移动滑块来登录</div>
-                                    <div class="handle" ref="loginSlider" @mousedown="mousedown" @mouseup="mouseup" :style="{left:this.moveLeft + 'px'}"></div>
-                                </div>
+    <div class="LoginPage" ref="htm">
+        <div id="loginContainer" class="desktopLogin"> 
+            <div id="loginFrame" class="desktop">
+                <div id="loginWrapper" class="loginWrapper">
+                    <img :src="require('@/assets/images/'+tadayPic)" onerror="this.style.display='none'">
+                </div>
+                <div id="loginPannelFrame" class="loginPannelFrame">
+                    <div id="loginFrame_Panel_Time" class="loginTime">16:52</div>
+                    <div id="loginFrame_Panel_Date" class="loginDate">4月1日 星期六</div>
+                    <div id="loginFrame_Panel_Load" class="loginLoading"></div>
+                    <div id="loginFrame_Panel_Form" class="loginForm">	
+                        <div class="loginTitle">欢迎</div>	
+                        <div class="loginsubTitle">回来，精彩有你 . . .</div>	
+                        <div class="loginUser">
+                            帐 号：<input type="text" v-model="username" name="userName" id="userName" class="loginText" placeholder="请输入帐号" autocomplete="on" required="required">
+                        </div>	
+                        <div class="loginPass">
+                            口 令：<input type="password" v-model="password" name="passWord" id="passWord" class="loginText" placeholder="请输入口令" required="required">
+                        </div>	
+                        <div id="loginFrame_Panel_Info" class="loginInfo">&nbsp;</div>	
+                        <div id="loginFrame_Panel_Slider" class="loginSlider">
+                            <div class="track">
+                                <div class="track-message" :style="{opacity:this.msgOpt}">移动滑块来登录</div>
+                                <div class="handle" ref="loginSlider" @mousedown="mousedown" @mouseup="mouseup" :style="{left:this.moveLeft + 'px'}"></div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="loginCopyright">©2023 small-Y-KH</div>
             </div>
+            <div class="loginCopyright">©2023 small-Y-KH</div>
         </div>
-    </div>
-    <div v-else>
-      <DeskTop />
     </div>
 </template>
 
 <script>
-import {getTodayPic,getLogin} from '../API/api.js'
-import DeskTop from "./DeskTop";
+import {getTodayPic,Login} from '../API/api.js'
+import VueCookies from 'vue-cookies'
 
 import $ from "jquery";
 import toastr from "../../public/Toaster/toastr.js";
-// import axios from "axios";
+import {encrypt} from '@/common/crypto'
+
 export default {
     name: 'LoginPage',
     data() {
@@ -55,15 +51,20 @@ export default {
             min : 0,
             max : 218,
             msgOpt : 1,
-            userName:'',
+            username:'',
             password:'',
-            noDeskTop:true
         }
     },
-    components:{
-        DeskTop,
+    created(){
+        var userData = VueCookies.get('TUser');
+        console.log(userData)
+        if(userData.loginStatus){
+            console.log('/')
+            location.href = "/DeskTop"
+        }
     },
     mounted(){
+        $('#loginFrame_Panel_Form').css({'left':'50%','opacity':1,'transition-property':'all','transition-duration':'0s','transition-timing-function':'ease'})
         var loginSlider = this.$refs.loginSlider;
         var htm = this.$refs.htm;
         var that = this;
@@ -110,7 +111,7 @@ export default {
          
         });
         function login() {
-            if(that.userName==''){
+            if(that.username==''){
                 toastr.warning('请输入您的用户名！')
                 $("#userName").focus();
                 playSound('warn');
@@ -120,56 +121,35 @@ export default {
                     $("#password").focus();
                     playSound('warn');
                 }else{
+                    $('#loginFrame_Panel_Load').css('display','block')
                     postLogin();
                 }
             }
         }
         function postLogin() {
             //进入桌面
-            playSound('desktop');
-            if(that.userName=='haoyuwei'&&that.password=='hyw123'){
-                that.noDeskTop=!that.noDeskTop;
-            }
-        }
-        function oneTimeLogin() {
-            getLogin('api/Login').then(res=>{
+            const name = that.username;
+            const pass = encrypt(that.password)
+            Login('api/Login',{name:name,pass:pass}).then(res=>{
+                
                 console.log(res);
-                if(res.status){
+                if(res.status==200){
                     var data = res.data;
-                    if(data.loginStatus){
-                        console.log('已登录，进入桌面！')
-                        that.noDeskTop=false;
-                    }
+                    console.log('已登录，进入桌面！')
+                    VueCookies.set('TUser',data)
+                    playSound('desktop');
+                    location.href = "/DeskTop"
                 }
                 },err=>{
                     console.log(err);
-                
+                    toastr.warning('服务器错误！'+err.message)
             });
         }
         function playSound(soundType) {
             var soundTag = document.getElementById(soundType+"_sound");
             soundTag.play()
         }
-        toastr.options = {
-            "closeButton": true,//是否显示关闭按钮
-            "debug": false,//是否使用debug模式
-            "positionClass": "toast-bottom-right",//弹出窗的位置
-            "onclick": null,
-            "showDuration": "1000",//显示的动画时间
-            "hideDuration": "1000",//消失的动画时间
-            "timeOut": "8000",//展现时间
-            "extendedTimeOut": "5000",//加长展示时间
-            "showEasing": "swing",//显示时的动画缓冲方式
-            "hideEasing": "linear",//消失时的动画缓冲方式
-            "showMethod": "fadeIn",//显示时的动画方式
-            "hideMethod": "fadeOut"//消失时的动画方式
-        }
-
-
-        oneTimeLogin();
-        setInterval(() => {
-            oneTimeLogin();
-        }, 3000);
+        
     }
 }
 </script>
@@ -264,7 +244,7 @@ export default {
     position: absolute;
     width: 400px;
     height: 300px;
-    left: 50%;
+    left: -200px;
     top: 50%;
     margin: -150px 0 0 -200px;
     color: #fff;

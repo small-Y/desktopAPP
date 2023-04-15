@@ -1,6 +1,6 @@
 <template>
   <div class="soundData">
-    <audio id="start_sound" autoplay preload="auto">
+    <audio id="start_sound" preload="auto">
       <source src="../assets/sound/start.mp3" type="audio/mpeg" />
     </audio>
     <audio id="warn_sound" preload="auto">
@@ -9,10 +9,10 @@
     <audio id="desktop_sound" preload="auto">
       <source src="../assets/sound/desktop.mp3" type="audio/mpeg" />
     </audio>
-    <audio id="desktop_sound" preload="auto">
-      <source src="../assets/sound/desktop.mp3" type="audio/mpeg" />
+    <audio id="rest_sound" preload="auto">
+      <source src="../assets/sound/rest.mp3" type="audio/mpeg" />
     </audio>
-    <audio id="info_sound" autoplay preload="auto">
+    <audio id="info_sound" preload="auto">
       <source src="../assets/sound/info.mp3" type="audio/mpeg" />
     </audio>
     <audio id="error_sound" preload="auto">

@@ -4,8 +4,11 @@ import axios from "axios";
 //     baseURL: "http://localhost:8080/",  //配置固定域名
 //     timeout: 5000
 // })
-export function getLogin(url){
-    return axios.get(url);
+export function getLogin(url,params){
+    return axios.post(url,params);
+}
+export function Login(url,params){
+    return axios.post(url,params);
 }
 export function getTodayPic(url){
     return axios.get(url);
@@ -13,11 +16,16 @@ export function getTodayPic(url){
 export function getCityList(url){
     return axios.get(url);
 }
+export function postLoginOut(url,params){
+    return axios.post(url,params);
+}
 
 export default {
     getTodayPic,
     getCityList,
-    getLogin
+    getLogin,
+    postLoginOut,
+    Login
 }
 
 
