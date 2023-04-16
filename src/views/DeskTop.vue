@@ -118,13 +118,13 @@
           <div class="UserMenu" v-show="showUserMenu">			
             <span class="pointer"></span>			
               <ul>				
-                <li class="doUserInfo"><i class="fa fa-edit"></i>&nbsp;个性签名</li>				
-                <li class="doUserPic"><i class="fa fa-camera"></i>&nbsp;上传头像</li>				
-                <li class="doUserPass"><i class="fa fa-key"></i>&nbsp;修改密码</li>				
+                <li class="doUserInfo" @click="changeUserSign"><i class="fa fa-edit"></i>&nbsp;个性签名</li>				
+                <li class="doUserPic" @click="changeUserPic"><i class="fa fa-camera"></i>&nbsp;上传头像</li>				
+                <li class="doUserPass" @click="changeUserPass"><i class="fa fa-key"></i>&nbsp;修改密码</li>				
                 <hr>				
-                <li class="doUserCenter"><i class="fa fa-user"></i>&nbsp;个人中心</li>				
-                <li class="fullScreen"><i class="fa fa-arrows-alt"></i>&nbsp;全屏模式</li>				
-                <li class="exitScreen"><i class="fa fa-arrows"></i>&nbsp;退出全屏</li>				
+                <li class="doUserCenter" @click="UserCenter"><i class="fa fa-user"></i>&nbsp;个人中心</li>				
+                <li class="fullScreen" @click="fullScreen"><i class="fa fa-arrows-alt"></i>&nbsp;全屏模式</li>				
+                <li class="exitScreen" @click="exitScreen"><i class="fa fa-arrows"></i>&nbsp;退出全屏</li>				
                 <hr>				
                 <li class="doUserLogout" @click="LiginOut"><i class="fa fa-sign-out"></i>&nbsp;注销退出</li>			
               </ul>		
@@ -141,7 +141,13 @@
 
       </div>
     </div>
-    <DialogPage :title="dialogTitle" :text="dialogText" :showDialog="showDialog" @click-Ok="clickLiginOutOk" @click-Cancel="clickCancel" @click-close="clickCloseDialog"/>
+    <DialogPage :title="dialogTitle" :width="width" :height="height" :showDialog="showDialog" :menuType="menuType" @click-Ok="clickLiginOutOk" @click-Cancel="clickCancel" @click-close="clickCloseDialog"/>
+    <DialogPagePlugin 
+    :title="dialogPluginTitle" 
+    :width="dialogPluginWidth" 
+    :height="dialogPluginHeight" 
+    :showDialog="showDialogPlugin"
+    @click-close="clickCloseDialog"/>
   </div>
 </template>
 
@@ -153,12 +159,20 @@
     import {getCityList,postLoginOut} from '../API/api.js'
     import VueCookies from 'vue-cookies'
     import DialogPage from "@/components/DialogPage.vue";
+    import DialogPagePlugin from "@/components/DialogPlugin.vue";
     import { useRouter } from 'vue-router'
     const router = useRouter()
 
+    const menuType=ref();
     const dialogTitle=ref();
-    const dialogText=ref();
+    const width=ref();
+    const height=ref();
     const showDialog=ref(false);
+
+    const dialogPluginTitle=ref();
+    const dialogPluginWidth=ref();
+    const dialogPluginHeight=ref();
+    const showDialogPlugin=ref(false);
 
     const Time1=ref();
     const Time2=ref();
@@ -418,10 +432,12 @@
     // 用户操作
     // 注销登录
     function LiginOut(){
-        dialogTitle.value='注销桌面',
-        dialogText.value='   您确定要注销ThingsOS桌面吗？'
+        dialogTitle.value='注销桌面';
+        width.value='400px';
+        height.value='155px'
         showDialog.value=true;
         showUserMenu.value=false;
+        menuType.value='loginOut';
         playSound('rest')
     }
     function clickCancel(){
@@ -432,6 +448,7 @@
     function clickCloseDialog(){
         console.log('点击关闭')
         showDialog.value=false;
+        showDialogPlugin.value=false;
         playSound('close')
     }
     function clickLiginOutOk(){
@@ -453,6 +470,79 @@
         });
     }
 
+    // 修改用户签名
+    function changeUserSign(){
+        dialogTitle.value='个性签名';
+        width.value='350px';
+        height.value='150px'
+        showDialog.value=true;
+        showUserMenu.value=false;
+        menuType.value='userSign';
+        playSound('rest')
+    }
+
+    //修改用户头像
+    function changeUserPic(){
+        dialogTitle.value='用户头像';
+        width.value='350px';
+        height.value='150px'
+        showDialog.value=true;
+        showUserMenu.value=false;
+        menuType.value='userPic';
+        playSound('rest')
+    }
+    //修改用户密码
+    function changeUserPass(){
+        dialogTitle.value='修改密码';
+        width.value='330px';
+        height.value='205px'
+        showDialog.value=true;
+        showUserMenu.value=false;
+        menuType.value='userPass';
+        playSound('rest')
+    }
+    function fullScreen(){
+        showUserMenu.value=false;
+        playSound('rest')
+        var doc = document.documentElement;
+        var screen = doc.requestFullScreen || doc.webkitRequestFullScreen || doc.mozRequestFullScreen || doc.msRequestFullscreen;
+        "undefined" != typeof screen && screen && screen.call(doc);
+        return true;
+    }
+    function exitScreen(){
+        showUserMenu.value=false;
+        playSound('rest')
+        document.exitFullscreen ? document.exitFullscreen() : document.mozCancelFullScreen ? document.mozCancelFullScreen() : document.webkitCancelFullScreen ? document.webkitCancelFullScreen() : document.msExitFullscreen && document.msExitFullscreen();
+    }
+    function UserCenter(){
+        if(showDialogPlugin.value){
+            showUserMenu.value=false;
+            return false;
+        }
+        dialogPluginTitle.value='个人中心';
+        dialogPluginWidth.value='960px';
+        dialogPluginHeight.value='678px';
+        showDialogPlugin.value=true;
+        showUserMenu.value=false;
+        var AppId = '0CB4D644-896A-4ADA-9D5F-58448BD04498';
+        playSound('rest')
+        addPannelTask(AppId);
+    }
+    function addPannelTask(AppId){
+        var $li = $('<li id="desktopFrame1_Panel_Task_"'+AppId+'>' 			
+                        +'<div class="icon">' 				
+                            +'<div class="label">' 					
+                                +'<em>个人中心</em>' 					
+                                +'<span class="pointer"></span>' 				
+                            +'</div>' 			
+                        +'</div>' 			
+                        +'<div id="desktopFrame1_Panel_Task_0CB4D644-896A-4ADA-9D5F-58448BD04498_Button" class="ButtonItemActive">'				
+                            +'    <img src="/webApp/Account/user.png" onmousedown="return false;">'          
+                        +'</div>'				
+                    +'</li>');
+        $("#desktopFrame1_Panel_Task_Button ul").append($li);
+    }
+    
 
 
     function playSound(soundType) {
@@ -1319,9 +1409,59 @@
     /* display: none; */
     cursor: move;
 }
-
-
-
+.taskbar .TaskButton li {
+    display: inline-block;
+    width: 50px;
+    height: 40px;
+}
+.taskbar .TaskButton li .icon {
+    line-height: 20px;
+}
+.taskbar .TaskButton li .label {
+    position: absolute;
+    top: 45px;
+    display: none;
+    width: 150px;
+    margin-left: -50px;
+    text-align: center;
+    color: #FFF;
+}
+.taskbar .TaskButton li .label em {
+    display: inline-block;
+    padding: 1px 10px;
+    font-style: normal;
+    background: #000;
+    background: rgba(0,0,0,.3);
+    border: rgba(255,255,255,0.3);
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+.taskbar .TaskButton li .label .pointer {
+    position: absolute;
+    bottom: -5px;
+    top: -5px;
+    left: 75px;
+    margin-left: -5px;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 0;
+    border-bottom: 5px solid rgba(0,0,0,.3);
+}
+.taskbar .TaskButton .ButtonItemActive {
+    cursor: pointer;
+    width: 50px;
+    height: 38px;
+    border-top: 2px solid rgba(255,255,255,1);
+    background: rgba(255,255,255,.4);
+}
+.taskbar .TaskButton li img {
+    width: 32px;
+    height: 32px;
+    padding: 3px 9px 4px 9px;
+}
 
 
 

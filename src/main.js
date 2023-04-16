@@ -28,6 +28,8 @@ import "../public/static/dateformat.js"
 import "../public/static/jquery.thooClock.js"
 //cookie
 import 'vue-cookies'
+//
+import 'font-awesome/css/font-awesome.css'
 
 //
 // import axios from 'axios'

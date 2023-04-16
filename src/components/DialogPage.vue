@@ -1,6 +1,6 @@
 <template>
-    <div class="DialogPage" v-show="showDialog">
-        <div id="dialog-2" class="dialog">
+    <div class="DialogPage" v-if="showDialog">
+        <div id="dialog-2" class="dialog" :style="{'width':width,'height':height}">
             <div class="bar">
                 <img src="@/assets/images/user/thingslabs.png" alt="" border="0" onmousedown="return false">
                 <span class="title">{{ title }}</span>
@@ -10,10 +10,30 @@
                 <div class="leftbar"></div>
                 <div class="content">
                     <div class="msgBox">
-                        <div class="msgIcon">
-                            <img src="@/assets/images/desktop/warn.png" alt="" width="64" height="64" border="0">
+                        <div v-if="menuType=='loginOut'">
+                            <div class="msgIcon">
+                                <img src="@/assets/images/desktop/warn.png" alt="" width="64" height="64" border="0">
+                            </div>
+                            <div class="msgText">   您确定要注销ThingsOS桌面吗？</div>
                         </div>
-                        <div class="msgText">{{ text }}</div>
+                        <div  v-else-if="menuType=='userSign'">
+                            <div class="msgInput">请输入您的信息：<br><input type="text" id="msgInput"></div>
+                        </div>
+                        <div v-else-if="menuType=='userPic'">
+                            <div class="msgInput">
+                                <form name="form" action="" method="POST" enctype="multipart/form-data">
+                                    请选择您的图片：<br>
+                                    <input id="fileToUpload" type="file" size="30" name="fileToUpload" accept="image/*">
+                                </form>
+                            </div>
+                        </div>
+                        <div v-else-if="menuType=='userPass'">
+                            <div class="msgPass">
+                                旧的密码：<input type="password" id="oldPass"><br>
+                                新的密码：<input type="password" id="newPass1"><br>
+                                确认密码：<input type="password" id="newPass2">
+                            </div>
+                        </div>
                         <div class="operate">
                             <a id="okBtn" class="inputButton" @click="$emit('clickOk')"> 确 定 </a>
                             <span style="margin:0 10px"></span>
@@ -39,9 +59,9 @@ export default {
 
         }
     },
-    props:['title','text','showDialog'],
+    props:['title','width','height','showDialog','menuType'],
     methods: {
-        
+
     }
 }
 </script>
@@ -65,8 +85,6 @@ export default {
     position: absolute;
     top: 366px;
     left: 732px;
-    width: 400px;
-    height: 155px;
     opacity: 1;
     transition-property: all;
     transition-duration: 0s;
@@ -201,6 +219,39 @@ export default {
     color: #5f5f5f;
     padding: 3px;
     height: 32px;
+}
+.dialog .main .content .msgBox .msgInput {
+    height: 65px;
+    top: 0;
+    left: 0;
+    padding: 15px 25px;
+    text-align: left;
+    vertical-align: middle;
+    position: relative;
+    display: table-cell;
+    line-height: 24px;
+    color: #000;
+    font-family: Arial,Tahoma,微软雅黑;
+    font-size: 11pt;
+}
+.dialog .main .content .msgBox .msgInput input {
+    width: 300px;
+    border: 1px solid #ccc;
+    font-size: 12pt;
+}
+.dialog .main .content .msgBox .msgPass {
+    height: 65px;
+    top: 0;
+    left: 0;
+    padding: 15px 25px;
+    text-align: left;
+    vertical-align: middle;
+    position: relative;
+    display: table-cell;
+    line-height: 40px;
+    color: #000;
+    font-family: Arial,Tahoma,微软雅黑;
+    font-size: 11pt;
 }
 </style>
   
