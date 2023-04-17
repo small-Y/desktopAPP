@@ -1,24 +1,29 @@
 <template>
-    <div class="DialogPlugin" v-if="showDialog">
-        <div id="dialog-1" class="dialog" :style="{'width':width,'height':height,left:this.moveLeft + 'px',top:this.moveTop + 'px'}">
-            <div class="bar">
-                <img src="@/webApp/Account/user.png" alt="" border="0" onmousedown="return false">
-                <span class="title">{{ title }}</span>
-                <a class="close" @click="$emit('clickClose')"></a>
-                <a class="max" @click="clickMax"></a>
-                <a class="min" @click="clickMin"></a>
-            </div>
-            <div class="main">
-                <div class="leftbar"></div>
-                <div class="winSize" v-if="showSize"><div class="sizeText">^_^&nbsp;窗体调整中...</div></div>
-                <div class="content" v-else>
-                    <iframe src="@/webApp/Account/" frameborder="0" marginwidth="0" marginheight="0"></iframe>
+    <div class="DialogPlugin" v-if="showDialogPlugin">
+        <div id="DialogPlugin_item" v-for="(item, index) in installApp" :key="item.appID">
+            <div :id="'dialog-'+index" class="dialog" :style="{'width':width,'height':height,left:this.moveLeft + 'px',top:this.moveTop + 'px'}">
+                <div class="bar">
+                    {{ item.appUrl }}
+                    {{ item.icons }}
+                    <img :src="require('@/webApp/Account/user.png')">
+                    <!-- <img :src="require('@'+item.appUrl+item.icons)"> -->
+                    <span class="title">{{ title }}</span>
+                    <a class="close" @click="$emit('clickClose')"></a>
+                    <a class="max" @click="clickMax"></a>
+                    <a class="min" @click="clickMin"></a>
                 </div>
-                <div class="rightbar"></div>
+                <div class="main">
+                    <div class="leftbar"></div>
+                    <div class="winSize" v-if="showSize"><div class="sizeText">^_^&nbsp;窗体调整中...</div></div>
+                    <div class="content" v-else>
+                        <iframe src="@/webApp/Account/" frameborder="0" marginwidth="0" marginheight="0"></iframe>
+                    </div>
+                    <div class="rightbar"></div>
+                </div>
+                <div class="foot"></div>
+                <div class="mask"></div>
+                <div class="barMove" @mousedown="barMoveDown" @mouseup="barMoveUp"></div>
             </div>
-            <div class="foot"></div>
-            <div class="mask"></div>
-            <div class="barMove" @mousedown="barMoveDown" @mouseup="barMoveUp"></div>
         </div>
     </div>
 </template>
@@ -43,7 +48,7 @@
                 DzIndex:0
             }
         },
-        props:['title','width','height','showDialog'],
+        props:['title','width','height','showDialogPlugin','installApp'],
         methods: {
             barMoveDown:function(event){
                 this.showSize=true;
@@ -127,7 +132,6 @@
         },
         mounted(){
             $(document).bind("mouseup", function() {
-                console.log('抬起')
                 this.showSize=false;
                 $(document).unbind("mousemove")
             });
@@ -344,5 +348,15 @@
 }
 .dialog-max .foot {
     height: 0;
+}
+.dialog .barMove {
+    position: absolute;
+    top: 0;
+    left: 36px;
+    right: 100px;
+    cursor: move;
+    color: #5f5f5f;
+    padding: 3px;
+    height: 32px;
 }
 </style>

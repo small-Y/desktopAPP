@@ -19,13 +19,17 @@ export function getCityList(url){
 export function postLoginOut(url,params){
     return axios.post(url,params);
 }
+export function readConfig(url,params){
+    return axios.post(url,params);
+}
 
 export default {
     getTodayPic,
     getCityList,
     getLogin,
     postLoginOut,
-    Login
+    Login,
+    readConfig
 }
 
 

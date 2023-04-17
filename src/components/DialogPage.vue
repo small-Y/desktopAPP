@@ -1,6 +1,6 @@
 <template>
     <div class="DialogPage" v-if="showDialog">
-        <div id="dialog-2" class="dialog" :style="{'width':width,'height':height}">
+        <div id="dialog" class="dialog" :style="{'width':width,'height':height,left:this.moveLeft + 'px',top:this.moveTop + 'px'}">
             <div class="bar">
                 <img src="@/assets/images/user/thingslabs.png" alt="" border="0" onmousedown="return false">
                 <span class="title">{{ title }}</span>
@@ -45,28 +45,47 @@
             </div>
             <div class="foot"></div>
             <div class="mask"></div>
-            <div class="barMove"></div>
+            <div class="barMove" @mousedown="barMoveDown" @mouseup="barMoveUp"></div>
         </div>
         <div id="dialog-2-overlay" class="dialog-overlay"></div>
     </div>
 </template>
 
 <script>
+import $ from "jquery";
 export default {
     name: 'DialogPage',
     data() {
         return {
-
+            moveLeft:732,
+            moveTop:366,
+            beginLeft:0,
+            beginTop:0,
         }
     },
     props:['title','width','height','showDialog','menuType'],
     methods: {
-
+        barMoveDown:function(event){
+            this.showSize=true;
+            console.log(event)
+            console.log(event.clientX,'坐标',event.clientY)
+            this.beginTop = event.clientY - parseInt($("#dialog").css("top"));
+            this.beginLeft = event.clientX - parseInt($("#dialog").css("left"));
+            $(document).bind("mousemove", this.moveGo)
+        },
+        barMoveUp:function(){
+            this.showSize=false;
+        },
+        moveGo:function(event){
+            console.log(event.clientX ,'移动',event.clientY)
+            this.moveTop = (event.clientY - this.beginTop);
+            this.moveLeft = (event.clientX - this.beginLeft);
+        },
     }
 }
 </script>
 
-<style>
+<style scoped>
 .dialog-overlay {
     left: 0px;
     top: 0px;

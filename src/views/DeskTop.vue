@@ -56,7 +56,11 @@
             </li>
           </ul>
         </div>
-        <div id="desktopFrame1_Panel_Task_Button" class="TaskButton"><ul></ul></div>
+        <div id="desktopFrame1_Panel_Task_Button" class="TaskButton">
+            <ul>
+                <PannelTask/>
+            </ul>
+        </div>
         <div id="desktopFrame1_Panel_Task_Status" class="TaskStatus">
           <div class="WeatherList" v-show="showWeatherList">			
             <span class="pointer"></span>			
@@ -141,12 +145,21 @@
 
       </div>
     </div>
-    <DialogPage :title="dialogTitle" :width="width" :height="height" :showDialog="showDialog" :menuType="menuType" @click-Ok="clickLiginOutOk" @click-Cancel="clickCancel" @click-close="clickCloseDialog"/>
+    <DialogPage 
+    :title="dialogTitle" 
+    :width="width" 
+    :height="height" 
+    :showDialog="showDialog" 
+    :menuType="menuType" 
+    @click-Ok="clickLiginOutOk"
+     @click-Cancel="clickCancel" 
+     @click-close="clickCloseDialog"/>
     <DialogPagePlugin 
     :title="dialogPluginTitle" 
     :width="dialogPluginWidth" 
     :height="dialogPluginHeight" 
-    :showDialog="showDialogPlugin"
+    :showDialogPlugin="showDialogPlugin"
+    :installApp="installApp"
     @click-close="clickCloseDialog"/>
   </div>
 </template>
@@ -156,10 +169,11 @@
     import { getLunar } from 'chinese-lunar-calendar'
     import $ from "jquery";
     import toastr from "../../public/Toaster/toastr.js";
-    import {getCityList,postLoginOut} from '../API/api.js'
+    import {getCityList,postLoginOut,readConfig} from '../API/api.js'
     import VueCookies from 'vue-cookies'
     import DialogPage from "@/components/DialogPage.vue";
     import DialogPagePlugin from "@/components/DialogPlugin.vue";
+    import PannelTask from "@/components/PannelTask.vue";
     import { useRouter } from 'vue-router'
     const router = useRouter()
 
@@ -173,6 +187,8 @@
     const dialogPluginWidth=ref();
     const dialogPluginHeight=ref();
     const showDialogPlugin=ref(false);
+
+    const installApp=ref();
 
     const Time1=ref();
     const Time2=ref();
@@ -515,32 +531,17 @@
         document.exitFullscreen ? document.exitFullscreen() : document.mozCancelFullScreen ? document.mozCancelFullScreen() : document.webkitCancelFullScreen ? document.webkitCancelFullScreen() : document.msExitFullscreen && document.msExitFullscreen();
     }
     function UserCenter(){
-        if(showDialogPlugin.value){
-            showUserMenu.value=false;
-            return false;
-        }
+        // if(showDialogPlugin.value){
+        //     showUserMenu.value=false;
+        //     return false;
+        // }
         dialogPluginTitle.value='个人中心';
         dialogPluginWidth.value='960px';
         dialogPluginHeight.value='678px';
         showDialogPlugin.value=true;
         showUserMenu.value=false;
-        var AppId = '0CB4D644-896A-4ADA-9D5F-58448BD04498';
+        // var AppId = '0CB4D644-896A-4ADA-9D5F-58448BD04498';
         playSound('rest')
-        addPannelTask(AppId);
-    }
-    function addPannelTask(AppId){
-        var $li = $('<li id="desktopFrame1_Panel_Task_"'+AppId+'>' 			
-                        +'<div class="icon">' 				
-                            +'<div class="label">' 					
-                                +'<em>个人中心</em>' 					
-                                +'<span class="pointer"></span>' 				
-                            +'</div>' 			
-                        +'</div>' 			
-                        +'<div id="desktopFrame1_Panel_Task_0CB4D644-896A-4ADA-9D5F-58448BD04498_Button" class="ButtonItemActive">'				
-                            +'    <img src="/webApp/Account/user.png" onmousedown="return false;">'          
-                        +'</div>'				
-                    +'</li>');
-        $("#desktopFrame1_Panel_Task_Button ul").append($li);
     }
     
 
@@ -550,7 +551,22 @@
         soundTag.play()
     }
 
+    function init(){
+        var userData = VueCookies.get('TUser');
+        console.log(userData)
+        var userID = userData.userID;
+        readConfig('api/readConfig',{userID:userID}).then(res=>{
+            console.log(res.data);
+            installApp.value = res.data.installApp;
+
+        },err=>{
+            console.log(err);
+            toastr.warning('服务器错误！'+err.message)
+        });
+    }
+
     onMounted(()=>{
+        init();
         initClock();
         initClockList();
         getCityTag();
@@ -1414,54 +1430,7 @@
     width: 50px;
     height: 40px;
 }
-.taskbar .TaskButton li .icon {
-    line-height: 20px;
-}
-.taskbar .TaskButton li .label {
-    position: absolute;
-    top: 45px;
-    display: none;
-    width: 150px;
-    margin-left: -50px;
-    text-align: center;
-    color: #FFF;
-}
-.taskbar .TaskButton li .label em {
-    display: inline-block;
-    padding: 1px 10px;
-    font-style: normal;
-    background: #000;
-    background: rgba(0,0,0,.3);
-    border: rgba(255,255,255,0.3);
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
-}
-.taskbar .TaskButton li .label .pointer {
-    position: absolute;
-    bottom: -5px;
-    top: -5px;
-    left: 75px;
-    margin-left: -5px;
-    width: 0;
-    height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-top: 0;
-    border-bottom: 5px solid rgba(0,0,0,.3);
-}
-.taskbar .TaskButton .ButtonItemActive {
-    cursor: pointer;
-    width: 50px;
-    height: 38px;
-    border-top: 2px solid rgba(255,255,255,1);
-    background: rgba(255,255,255,.4);
-}
-.taskbar .TaskButton li img {
-    width: 32px;
-    height: 32px;
-    padding: 3px 9px 4px 9px;
-}
+
 
 
 
