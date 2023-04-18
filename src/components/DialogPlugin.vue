@@ -1,28 +1,26 @@
 <template>
     <div class="DialogPlugin" v-if="showDialogPlugin">
-        <div id="DialogPlugin_item" v-for="(item, index) in installApp" :key="item.appID">
+        <div id="DialogPlugin_item" v-for="(item, index) in listApp" :key="item.appID">
             <div :id="'dialog-'+index" class="dialog" :style="{'width':width,'height':height,left:this.moveLeft + 'px',top:this.moveTop + 'px'}">
                 <div class="bar">
-                    {{ item.appUrl }}
-                    {{ item.icons }}
                     <img :src="require('@/webApp/Account/user.png')">
-                    <!-- <img :src="require('@'+item.appUrl+item.icons)"> -->
+                    <!-- <img :src="require(item.icons)"> -->
                     <span class="title">{{ title }}</span>
                     <a class="close" @click="$emit('clickClose')"></a>
-                    <a class="max" @click="clickMax"></a>
-                    <a class="min" @click="clickMin"></a>
+                    <a class="max" @click="clickMax(index)"></a>
+                    <a class="min" @click="clickMin(index)"></a>
                 </div>
                 <div class="main">
                     <div class="leftbar"></div>
                     <div class="winSize" v-if="showSize"><div class="sizeText">^_^&nbsp;窗体调整中...</div></div>
                     <div class="content" v-else>
-                        <iframe src="@/webApp/Account/" frameborder="0" marginwidth="0" marginheight="0"></iframe>
+                        <iframe :src="require('@/views/LoginPage.vue')" frameborder="0" marginwidth="0" marginheight="0"></iframe>
                     </div>
                     <div class="rightbar"></div>
                 </div>
                 <div class="foot"></div>
                 <div class="mask"></div>
-                <div class="barMove" @mousedown="barMoveDown" @mouseup="barMoveUp"></div>
+                <div class="barMove" @mousedown="barMoveDown($event,index)" @mouseup="barMoveUp()"></div>
             </div>
         </div>
     </div>
@@ -48,14 +46,14 @@
                 DzIndex:0
             }
         },
-        props:['title','width','height','showDialogPlugin','installApp'],
+        props:['title','width','height','showDialogPlugin','listApp'],
         methods: {
-            barMoveDown:function(event){
+            barMoveDown:function(event,index){
                 this.showSize=true;
                 console.log(event)
                 console.log(event.clientX,'坐标',event.clientY)
-                this.beginTop = event.clientY - parseInt($("#dialog-1").css("top"));
-                this.beginLeft = event.clientX - parseInt($("#dialog-1").css("left"));
+                this.beginTop = event.clientY - parseInt($("#dialog-"+index).css("top"));
+                this.beginLeft = event.clientX - parseInt($("#dialog-"+index).css("left"));
                 $(document).bind("mousemove", this.moveGo)
             },
             barMoveUp:function(){
@@ -66,14 +64,14 @@
                 this.moveTop = (event.clientY - this.beginTop);
                 this.moveLeft = (event.clientX - this.beginLeft);
             },
-            clickMax:function(){
+            clickMax:function(index){
                 if(this.ifMax){
                     this.ifMax=false;
                     this.playSound("rest");
-                    $("#dialog-1").removeClass();
-                    $("#dialog-1").addClass("dialog");
-                    $("#dialog-1").css("z-index", this.DzIndex);
-                    $("#dialog-1").animate({
+                    $("#dialog-"+index).removeClass();
+                    $("#dialog-"+index).addClass("dialog");
+                    $("#dialog-"+index).css("z-index", this.DzIndex);
+                    $("#dialog-"+index).animate({
                         top: this.Dtop,
                         left: this.Dleft,
                         width: this.Dwidth,
@@ -81,19 +79,19 @@
                         avoidTransforms: false,
                         useTranslate3d: true
                     }, "normal", function() {
-                        $("#dialog-1").find(".content iframe").fadeIn("fast")
+                        $("#dialog-"+index).find(".content iframe").fadeIn("fast")
                     });
                 }else{
                     this.ifMax=true;
                     this.playSound("max");
-                    this.Dtop = parseInt($("#dialog-1").css("top"));
-                    this.Dleft = parseInt($("#dialog-1").css("left"));
-                    this.Dwidth = parseInt($("#dialog-1").css("width"));
-                    this.Dheight = parseInt($("#dialog-1").css("height"));
-                    this.DzIndex = parseInt($("#dialog-1").css("z-index"));
-                    $("#dialog-1").find(".content iframe").hide(),
-                    $("#dialog-1").css("z-index", 1000000),
-                    $("#dialog-1").animate({
+                    this.Dtop = parseInt($("#dialog-"+index).css("top"));
+                    this.Dleft = parseInt($("#dialog-"+index).css("left"));
+                    this.Dwidth = parseInt($("#dialog-"+index).css("width"));
+                    this.Dheight = parseInt($("#dialog-"+index).css("height"));
+                    this.DzIndex = parseInt($("#dialog-"+index).css("z-index"));
+                    $("#dialog-"+index).find(".content iframe").hide(),
+                    $("#dialog-"+index).css("z-index", 1000000),
+                    $("#dialog-"+index).animate({
                         top: 0,
                         left: 0,
                         width: $(window).width(),
@@ -101,28 +99,28 @@
                         avoidTransforms: false,
                         useTranslate3d: true
                     }, "fast", function() {
-                        $("#dialog-1").removeClass();
-                        $("#dialog-1").addClass("dialog-max");
-                        $("#dialog-1").find(".content iframe").fadeIn("fast")
+                        $("#dialog-"+index).removeClass();
+                        $("#dialog-"+index).addClass("dialog-max");
+                        $("#dialog-"+index).find(".content iframe").fadeIn("fast")
                     });
                 }
             },
-            clickMin:function(){
+            clickMin:function(index){
                 this.playSound("min");
-                this.Dtop = parseInt($("#dialog-1").css("top"));
-                this.Dleft = parseInt($("#dialog-1").css("left"));
-                this.Dwidth = parseInt($("#dialog-1").css("width"));
-                this.Dheight = parseInt($("#dialog-1").css("height"));
-                this.DzIndex = parseInt($("#dialog-1").css("z-index"));
-                $("#dialog-1").animate({
+                this.Dtop = parseInt($("#dialog-"+index).css("top"));
+                this.Dleft = parseInt($("#dialog-"+index).css("left"));
+                this.Dwidth = parseInt($("#dialog-"+index).css("width"));
+                this.Dheight = parseInt($("#dialog-"+index).css("height"));
+                this.DzIndex = parseInt($("#dialog-"+index).css("z-index"));
+                $("#dialog-"+index).animate({
                     top: -$(window).height() - 40,
                     opacity: 0,
                     avoidTransforms: false,
                     useTranslate3d: true
                 }, "normal", function() {
-                    $("#dialog-1").removeClass();
-                    $("#dialog-1").addClass("dialog");
-                    $("#dialog-1").css("z-index", -1);
+                    $("#dialog-"+index).removeClass();
+                    $("#dialog-"+index).addClass("dialog");
+                    $("#dialog-"+index).css("z-index", -1);
                 })
             },
             playSound:function(soundType){
@@ -242,7 +240,6 @@
     right: 5px;
     bottom: 5px;
     position: absolute;
-    display: none;
 }
 .dialog .main .winSize .sizeText {
     position: absolute;

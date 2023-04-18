@@ -1,22 +1,25 @@
 <template>
-  <li id="desktopFrame1_Panel_Task_">
-    <div class="icon">
-        <div class="label">
-            <em>个人中心</em>
-            <span class="pointer"></span>
+    <div v-if="showPannelTask">
+        <div class="pannelTask_item" v-for="(item, index) in listApp" :key="index"  @click="$emit('clickTask',index)">
+            <li :id="'desktopFrame1_Panel_Task_'+index">
+                <div class="icon">
+                    <div class="label">
+                        <em>个人中心</em>
+                        <span class="pointer"></span>
+                    </div>
+                </div>
+                <div id="desktopFrame1_Panel_Task_0CB4D644-896A-4ADA-9D5F-58448BD04498_Button" class="ButtonItemActive">
+                    <img src="@/webApp/Account/user.png" onmousedown="return false;">
+                </div>
+            </li>
         </div>
     </div>
-    <div id="desktopFrame1_Panel_Task_0CB4D644-896A-4ADA-9D5F-58448BD04498_Button" class="ButtonItemActive">
-        <img src="@/webApp/Account/user.png" onmousedown="return false;">
-    </div>
-  </li>
-    
 </template>
 
 <script>
 export default {
     name:'PannelTask',
-    props:[],
+    props:['showPannelTask','listApp'],
 
 }
 </script>

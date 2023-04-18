@@ -58,7 +58,7 @@
         </div>
         <div id="desktopFrame1_Panel_Task_Button" class="TaskButton">
             <ul>
-                <PannelTask/>
+                <PannelTask :listApp="listApp" :showPannelTask="showPannelTask" @click-task="clickPannelTask"/>
             </ul>
         </div>
         <div id="desktopFrame1_Panel_Task_Status" class="TaskStatus">
@@ -159,7 +159,7 @@
     :width="dialogPluginWidth" 
     :height="dialogPluginHeight" 
     :showDialogPlugin="showDialogPlugin"
-    :installApp="installApp"
+    :listApp="listApp"
     @click-close="clickCloseDialog"/>
   </div>
 </template>
@@ -189,6 +189,9 @@
     const showDialogPlugin=ref(false);
 
     const installApp=ref();
+
+    const listApp=ref();
+    const showPannelTask=ref(false)
 
     const Time1=ref();
     const Time2=ref();
@@ -466,6 +469,7 @@
         showDialog.value=false;
         showDialogPlugin.value=false;
         playSound('close')
+        showPannelTask.value=false;
     }
     function clickLiginOutOk(){
         console.log('点击确定')
@@ -542,6 +546,31 @@
         showUserMenu.value=false;
         // var AppId = '0CB4D644-896A-4ADA-9D5F-58448BD04498';
         playSound('rest')
+        //
+        var aList=[]
+        showPannelTask.value=true;
+        aList.push(installApp.value[0]);
+        listApp.value=aList;
+    }
+
+    function clickPannelTask(index){
+        console.log('index'+index)
+        showDialogPlugin.value=true;
+        playSound("rest");
+        $("#dialog-"+index).removeClass();
+        $("#dialog-"+index).addClass("dialog");
+        $("#dialog-"+index).css("z-index", 1000000);
+        $("#dialog-"+index).animate({
+            top: listApp.value[index].top,
+            left: listApp.value[index].left,
+            width: listApp.value[index].width,
+            height: listApp.value[index].height,
+            avoidTransforms: false,
+            useTranslate3d: true,
+            opacity: 1
+        }, "normal", function() {
+            $("#dialog-"+index).find(".content iframe").fadeIn("fast")
+        });
     }
     
 
