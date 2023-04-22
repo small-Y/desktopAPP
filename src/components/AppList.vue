@@ -1,6 +1,6 @@
 <template>
-    <div class="StartApp">
-        <div class="item" v-for="(item, index) in installApp" :key="index" @click="$emit('clickStartApp',index)">
+    <div class="AppList">
+        <div class="item" v-for="(item, index) in userApp" :key="index" @click="$emit('clickUserApp',index)">
             <img :src="item.appUrl+item.icons" alt="">
             <br>
             <span>{{ item.shortName }}</span>
@@ -10,14 +10,15 @@
 
 <script>
 export default {
-    name:'StartApp',
-    props:['installApp'],
+    name:'AppList',
+    props:['userApp'],
 
 }
 </script>
 
 <style scoped>
-.StartApp .item {
+.AppList .item {
+    position: relative;
     width: 85px;
     height: 80px;
     padding: 5px 2px 0 2px;
@@ -28,7 +29,10 @@ export default {
     display: inline-block;
     cursor: pointer;
 }
-.StartApp .item img {
+.AppList .item:hover {
+    background: rgba(0,0,0,.1);
+}
+.AppList .item img {
     width: 54px;
     height: 54px;
     overflow-clip-margin: content-box;

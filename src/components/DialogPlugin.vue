@@ -13,7 +13,7 @@
                     <div class="leftbar"></div>
                     <div class="winSize"><div class="sizeText">^_^&nbsp;窗体调整中...</div></div>
                     <div class="content">
-                        <iframe src="/webApp/Account/index.html" frameborder="0" marginwidth="0" marginheight="0"></iframe>
+                        <iframe :src="item.appUrl+'/index.html'" frameborder="0" marginwidth="0" marginheight="0"></iframe>
                     </div>
                     <div class="rightbar"></div>
                 </div>
@@ -243,6 +243,9 @@
     font: 12px/1.5 tahoma,helvetica,clean,sans-serif;
     color: #45649e;
 }
+.dialog .bar .close:hover {
+    background-position: 0 -142px
+}
 .dialog .bar .max {
     float: right;
     cursor: pointer;
@@ -252,6 +255,9 @@
     background: url(@/assets/images/desktop/dialog-bt.png) no-repeat;
     background-position: 0 -69px;
 }
+.dialog .bar .max:hover {
+    background-position: 0 -45px
+}
 .dialog .bar .min {
     float: right;
     cursor: pointer;
@@ -260,6 +266,9 @@
     height: 24px;
     background: url(@/assets/images/desktop/dialog-bt.png) no-repeat;
     background-position: 0 -20px;
+}
+.dialog .bar .min:hover {
+    background-position: 0 4px
 }
 .dialog .main {
     width: 100%;
@@ -294,6 +303,9 @@
     right: 5px;
     bottom: 5px;
     position: absolute;
+    display: none;
+}
+.dialog-max .main .winSize {
     display: none;
 }
 .dialog .main .winSize .sizeText {

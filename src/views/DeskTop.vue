@@ -24,10 +24,14 @@
               <div id="desktopFrame1_Panel_Task_apply" class="ApplyButton" @click="clickAppMenu"></div>
               <div class="AppMenu" v-show="showAppMenu">
                 <div class="AppList">
-                  <div class="tab1 active"></div>
-                  <div class="tab1content"></div>
-                  <div class="tab2"></div>
-                  <div class="tab2content"></div>
+                    <div class="tab1" @click="showAppListTab1=true" :class="showAppListTab1?'active':''"></div>
+                    <div class="tab2" @click="showAppListTab1=false" :class="showAppListTab1?'':'active'"></div>
+                    <div class="tab1content" v-if="showAppListTab1">
+                        <AppList :userApp="userApp" @click-UserApp="clickUserApp"/>
+                    </div>
+                    <div class="tab2content" v-else>
+                        
+                    </div>
                 </div>
                 <div class="AppSearch">
                   <div class="searchBtn"><i class="fa fa-search"></i></div>
@@ -41,10 +45,14 @@
               <div id="desktopFrame1_Panel_Task_theme" class="ThemeButton" @click="clickThemeMenu"></div>
               <div class="ThemeMenu" v-show="showThemeMenu">
                 <div class="ThemeList">
-                  <div class="tab1 active"></div>
-                  <div class="tab1content"></div>
-                  <div class="tab1"></div>
-                  <div class="tab2content"></div>
+                  <div class="tab1" @click="showThemeListTab1=true" :class="showThemeListTab1?'active':''"></div>
+                  <div class="tab2" @click="showThemeListTab1=false" :class="showThemeListTab1?'':'active'"></div>
+                  <div class="tab1content" v-if="showThemeListTab1">
+                
+                  </div>
+                  <div class="tab2content" v-else>
+
+                  </div>
                 </div>
                 <div class="ThemeSearch">					
                   <div class="searchBtn"><i class="fa fa-search"></i></div>					
@@ -175,6 +183,7 @@
     import DialogPagePlugin from "@/components/DialogPlugin.vue";
     import PannelTask from "@/components/PannelTask.vue";
     import StartApp from "@/components/StartApp.vue";
+    import AppList from "@/components/AppList.vue";
     import { useRouter } from 'vue-router'
     const router = useRouter()
 
@@ -190,6 +199,7 @@
     const showDialogPlugin=ref(false);
 
     const installApp=ref();
+    const userApp=ref();
 
     const listApp=ref([]);
     const showPannelTask=ref(false)
@@ -235,6 +245,8 @@
     const showUserMenu=ref(false);
     const showClockList=ref(false);
     const showSearch=ref(false)
+    const showAppListTab1=ref(true)
+    const showThemeListTab1=ref(true)
 
     //阻止右键点击事件
     document.addEventListener('mousedown',function(e){
@@ -251,6 +263,9 @@
         showWeatherList.value=false
         showUserMenu.value=false
         showClockList.value=false
+        $(".HomeButton").removeClass("active");
+        $(".ApplyButton").removeClass("active");
+        $(".ThemeButton").removeClass("active");
     }
     function clickStartMenu() {
         showStartMenu.value=!showStartMenu.value
@@ -260,6 +275,9 @@
         showWeatherList.value=false
         showUserMenu.value=false
         showClockList.value=false
+        $(".HomeButton").addClass("active");
+        $(".ApplyButton").removeClass("active");
+        $(".ThemeButton").removeClass("active");
     }
     function clickAppMenu() {
         showAppMenu.value=!showAppMenu.value
@@ -269,6 +287,9 @@
         showWeatherList.value=false
         showUserMenu.value=false
         showClockList.value=false
+        $(".ApplyButton").addClass("active");
+        $(".HomeButton").removeClass("active");
+        $(".ThemeButton").removeClass("active");
     }
     function clickThemeMenu() {
         showThemeMenu.value=!showThemeMenu.value
@@ -278,6 +299,9 @@
         showWeatherList.value=false
         showUserMenu.value=false
         showClockList.value=false
+        $(".ThemeButton").addClass("active");
+        $(".HomeButton").removeClass("active");
+        $(".ApplyButton").removeClass("active");
     }
     function clickSayma() {
         showSearch.value=!showSearch.value
@@ -319,6 +343,8 @@
 
     // }
 
+
+    // 
     function initClock(){
         var now = new Date();
         var hour = now.getHours();
@@ -570,7 +596,7 @@
         console.log('index'+index)
         showDialogPlugin.value=true;
         playSound("rest");
-        var top = $("#dialog-"+index).css('top');
+        var top = parseInt($("#dialog-"+index).css('top').split('px')[0]);
         var maxZindex = getDialogZindexMax();
         console.log(maxZindex);
         maxZindex++;
@@ -627,7 +653,7 @@
         return max
     }
 
-    // 
+    // 点击打开系统app
     function clickStartApp(index){
         playSound("rest");
         showStartMenu.value=false
@@ -635,6 +661,19 @@
         showDialogPlugin.value=true;
         var aList=listApp.value;
         aList.push(installApp.value[index]);
+        aList=arreryFiter(aList);
+        aList[aList.length-1].active=true;
+        listApp.value=aList;
+        setDialogPlugin(index);
+    }
+    // 点击打开用户app
+    function clickUserApp(index){
+        playSound("rest");
+        showAppMenu.value=false
+        showPannelTask.value=true;
+        showDialogPlugin.value=true;
+        var aList=listApp.value;
+        aList.push(userApp.value[index]);
         aList=arreryFiter(aList);
         aList[aList.length-1].active=true;
         listApp.value=aList;
@@ -660,6 +699,7 @@
         readConfig('api/readConfig',{userID:userID}).then(res=>{
             // console.log(res.data);
             installApp.value = res.data.installApp;
+            userApp.value = res.data.userApp;
             if(res.data.system.myTheme){
                 // console.log('添加主题！')
                 document.getElementById("mytheme").href ="/Theme/"+ res.data.system.myTheme + "/theme.css"
@@ -760,6 +800,13 @@
     height: 32px;
     background: url(../assets/images/desktop/start1.png) no-repeat;
 }
+.taskbar .SystemButton .HomeButton:hover {
+    background: url(../assets/images/desktop/start2.png) no-repeat
+}
+
+.taskbar .SystemButton .HomeButton.active {
+    background: url(../assets/images/desktop/start2.png) no-repeat
+}
 .taskbar .SystemButton li {
     display: inline-block;
     width: 32px;
@@ -827,6 +874,9 @@
     opacity: .6;
     cursor: pointer;
 }
+.taskbar .SystemButton .StartMenu .UserOperate .DoLock:hover {
+    opacity: 1
+}
 .taskbar .SystemButton .StartMenu .UserOperate .Logout {
     position: absolute;
     top: 0;
@@ -839,11 +889,21 @@
     opacity: .6;
     cursor: pointer;
 }
+.taskbar .SystemButton .StartMenu .UserOperate .Logout:hover {
+    opacity: 1
+}
 .taskbar .SystemButton .ApplyButton {
     cursor: pointer;
     width: 32px;
     height: 32px;
     background: url(../assets/images/desktop/appcenter1.png) no-repeat;
+}
+.taskbar .SystemButton .ApplyButton:hover {
+    background: url(../assets/images/desktop/appcenter2.png) no-repeat
+}
+
+.taskbar .SystemButton .ApplyButton.active {
+    background: url(../assets/images/desktop/appcenter2.png) no-repeat
 }
 .taskbar .SystemButton .AppMenu {
     position: absolute;
@@ -869,6 +929,27 @@
     width: 100%;
     bottom: 40px;
 }
+.taskbar .SystemButton .StartMenu .AppList .item {
+    width: 85px;
+    height: 80px;
+    padding: 5px 2px 0 2px;
+    line-height: 16px;
+    color: #666;
+    font-size: 14px;
+    text-align: center;
+    display: inline-block;
+    cursor: pointer;
+}
+.taskbar .SystemButton .StartMenu .AppList .item:hover {
+    background: rgba(0,0,0,.1)
+}
+.taskbar .SystemButton .StartMenu .AppList .item:hover span {
+    color: #000
+}
+.taskbar .SystemButton .StartMenu .AppList .item img {
+    width: 54px;
+    height: 54px
+}
 .taskbar .SystemButton .AppMenu .AppList .tab1 {
     position: absolute;
     top: 2px;
@@ -879,6 +960,9 @@
     border-bottom: 6px solid #fafafa;
     background: #ddd;
     cursor: pointer;
+}
+.taskbar .SystemButton .AppMenu .AppList .tab1.active {
+    background: #9cf
 }
 .taskbar .SystemButton .AppMenu .AppList .tab1content {
     position: absolute;
@@ -902,6 +986,9 @@
     background: #ddd;
     cursor: pointer;
 }
+.taskbar .SystemButton .AppMenu .AppList .tab2.active {
+    background: #9cf
+}
 .taskbar .SystemButton .AppMenu .AppList .tab2content {
     position: absolute;
     top: 15px;
@@ -912,7 +999,6 @@
     padding: 10px 0 5px 5px;
     overflow: auto;
     overflow-x: hidden;
-    display: none;
 }
 .taskbar .SystemButton .AppMenu .AppSearch {
     position: absolute;
@@ -970,6 +1056,13 @@
     height: 32px;
     background: url(../assets/images/desktop/theme1.png) no-repeat;
 }
+.taskbar .SystemButton .ThemeButton:hover {
+    background: url(../assets/images/desktop/theme2.png) no-repeat
+}
+
+.taskbar .SystemButton .ThemeButton.active {
+    background: url(../assets/images/desktop/theme2.png) no-repeat
+}
 .taskbar .SystemButton .ThemeMenu {
     position: absolute;
     top: 45px;
@@ -1005,6 +1098,9 @@
     background: #ddd;
     cursor: pointer;
 }
+.taskbar .SystemButton .ThemeMenu .ThemeList .tab1.active {
+    background: #9cf
+}
 .taskbar .SystemButton .ThemeMenu .ThemeList .tab1content {
     position: absolute;
     top: 15px;
@@ -1027,6 +1123,9 @@
     background: #ddd;
     cursor: pointer;
 }
+.taskbar .SystemButton .ThemeMenu .ThemeList .tab2.active {
+    background: #9cf
+}
 .taskbar .SystemButton .ThemeMenu .ThemeList .tab2content {
     position: absolute;
     top: 15px;
@@ -1037,7 +1136,6 @@
     padding: 10px 0 5px 10px;
     overflow: auto;
     overflow-x: hidden;
-    display: none;
 }
 .taskbar .SystemButton .ThemeMenu .ThemeSearch {
     position: absolute;
@@ -1057,6 +1155,9 @@
     height: 20px;
     padding: 0 10px;
     font-size: 14pt;
+}
+.taskbar .SystemButton .ThemeMenu .ThemeSearch .searchBtn:hover {
+    color: #000
 }
 .taskbar .SystemButton .ThemeMenu .ThemeSearch .searchKey {
     position: absolute;
@@ -1524,7 +1625,6 @@
     left: 0;
     width: 70px;
     height: 70px;
-    /* display: none; */
     cursor: move;
 }
 .taskbar .TaskButton li {

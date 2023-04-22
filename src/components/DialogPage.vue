@@ -142,6 +142,9 @@ export default {
     font: 12px/1.5 tahoma,helvetica,clean,sans-serif;
     color: #45649e;
 }
+.dialog .bar .close:hover {
+    background-position: 0 -142px
+}
 .dialog .main {
     width: 100%;
     height: 100%;
