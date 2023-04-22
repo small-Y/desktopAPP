@@ -1,7 +1,7 @@
 <template>
     <div class="DialogPlugin" v-if="showDialogPlugin">
         <div id="DialogPlugin_item" v-for="(item, index) in listApp" :key="item.appID">
-            <div :id="'dialog-'+index" class="dialog" :style="{'width':item.width + 'px','height':item.height + 'px'}">
+            <div :id="'dialog-'+index" class="dialog" :style="{'width':item.width + 'px','height':item.height + 'px','z-index':this.zindex+index+1}">
                 <div class="bar">
                     <img :src="item.appUrl+item.icons">
                     <span class="title">{{item.shortName}}</span>
@@ -40,6 +40,7 @@
                 Dwidth:0,
                 Dheight:0,
                 DzIndex:0,
+                zindex:500,
                 index:0
             }
         },
@@ -47,13 +48,11 @@
         methods: {
             barMoveDown:function(event,index){
                 this.index=index;
-                this.zindex = $("#dialog-"+index).css('z-index');
-                if(this.zindex=='auto'){
-                    this.zindex=500;
-                }
-                this.zindex=parseInt(this.zindex)+10;
+                var maxZindex = this.getDialogZindexMax();
+                console.log(maxZindex);
+                maxZindex++;
                 $("#dialog-"+this.index).css({
-                    'z-index':this.zindex
+                    'z-index':maxZindex
                 });
                 $("#dialog-"+this.index).find(".winSize").css({
                     'display':'block'
@@ -164,6 +163,15 @@
                 console.log('normal: '+appID)
                 $("#desktopFrame1_Panel_Task_" + appID + "_Button").removeClass();
                 $("#desktopFrame1_Panel_Task_" + appID + "_Button").addClass("ButtonItem")
+            },
+            getDialogZindexMax:function () {
+                var myList = [];
+                for (let i = 0; i < 20; i++) {
+                    var myZindex = $("#dialog-"+i).css('z-index');
+                    myList.push(myZindex?parseInt(myZindex):0);
+                }
+                var max = Math.max(...myList)
+                return max
             },
             playSound:function(soundType){
                 var soundTag = document.getElementById(soundType+"_sound");

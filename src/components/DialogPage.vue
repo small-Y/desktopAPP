@@ -1,6 +1,6 @@
 <template>
     <div class="DialogPage" v-if="showDialog">
-        <div id="dialog" class="dialog" :style="{'width':width,'height':height,left:this.moveLeft + 'px',top:this.moveTop + 'px'}">
+        <div id="dialog" class="dialog" :style="{'width':width,'height':height,'left':this.moveLeft + 'px','top':this.moveTop + 'px'}">
             <div class="bar">
                 <img src="@/assets/images/user/thingslabs.png" alt="" border="0" onmousedown="return false">
                 <span class="title">{{ title }}</span>

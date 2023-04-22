@@ -151,7 +151,6 @@
     :height="height" 
     :showDialog="showDialog" 
     :menuType="menuType"
-    :zindex="zindex" 
     @click-Ok="clickLiginOutOk"
      @click-Cancel="clickCancel" 
      @click-close="clickCloseDialog"/>
@@ -161,7 +160,6 @@
     :height="dialogPluginHeight" 
     :showDialogPlugin="showDialogPlugin"
     :listApp="listApp"
-    :zindex="zindex" 
     @click-close="clickCloseDialogPlugin"/>
   </div>
 </template>
@@ -195,7 +193,6 @@
 
     const listApp=ref([]);
     const showPannelTask=ref(false)
-    const zindex=ref(500)
 
     const Time1=ref();
     const Time2=ref();
@@ -574,10 +571,13 @@
         showDialogPlugin.value=true;
         playSound("rest");
         var top = $("#dialog-"+index).css('top');
+        var maxZindex = getDialogZindexMax();
+        console.log(maxZindex);
+        maxZindex++;
         if(top<-600){
             $("#dialog-"+index).removeClass();
             $("#dialog-"+index).addClass("dialog");
-            $("#dialog-"+index).css("z-index", (zindex.value+10));
+            $("#dialog-"+index).css("z-index", maxZindex);
             $("#dialog-"+index).animate({
                 top: listApp.value[index].top,
                 left: listApp.value[index].left,
@@ -590,7 +590,7 @@
                 $("#dialog-"+index).find(".content iframe").fadeIn("fast")
             });
         }else{
-            $("#dialog-"+index).css("z-index", (zindex.value+10));
+            $("#dialog-"+index).css("z-index", maxZindex);
         }
         setDialogPlugin(index);
         
@@ -617,6 +617,15 @@
         $("#desktopFrame1_Panel_Task_" + appID + "_Button").removeClass();
         $("#desktopFrame1_Panel_Task_" + appID + "_Button").addClass("ButtonItem")
     }
+    function getDialogZindexMax () {
+        var myList = [];
+        for (let i = 0; i < 20; i++) {
+            var myZindex = $("#dialog-"+i).css('z-index');
+            myList.push(myZindex?parseInt(myZindex):0);
+        }
+        var max = Math.max(...myList)
+        return max
+    }
 
     // 
     function clickStartApp(index){
@@ -627,7 +636,7 @@
         var aList=listApp.value;
         aList.push(installApp.value[index]);
         aList=arreryFiter(aList);
-        aList[index].active=true;
+        aList[aList.length-1].active=true;
         listApp.value=aList;
         setDialogPlugin(index);
     }
