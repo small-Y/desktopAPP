@@ -87,27 +87,19 @@ export default {
 
 <style scoped>
 .dialog-overlay {
-    left: 0px;
-    top: 0px;
     width: 100%;
     height: 937px;
-    z-index: 503;
+    z-index: 5503;
     position: absolute;
     opacity: 1;
-    transition-property: all;
-    transition-duration: 0s;
-    transition-timing-function: ease;
     background: transparent url(@/assets/images/desktop/overlay1.png) repeat center top;
 }
 .dialog {
-    z-index: 504;
+    z-index: 5504;
     position: absolute;
     top: 366px;
     left: 732px;
     opacity: 1;
-    transition-property: all;
-    transition-duration: 0s;
-    transition-timing-function: ease;
     background: #c0c0c0 url(@/assets/images/desktop/frame.png) repeat-x left top;
     padding: 4px 0 33px 0;
     -moz-box-shadow: 5px 5px 30px rgba(0,0,0,0.7);

@@ -6,8 +6,8 @@
                     <img :src="require('@/assets/images/'+tadayPic)" onerror="this.style.display='none'">
                 </div>
                 <div id="loginPannelFrame" class="loginPannelFrame">
-                    <div id="loginFrame_Panel_Time" class="loginTime">16:52</div>
-                    <div id="loginFrame_Panel_Date" class="loginDate">4月1日 星期六</div>
+                    <div id="loginFrame_Panel_Time" class="loginTime">{{ hour }}:{{ minutes }}</div>
+                    <div id="loginFrame_Panel_Date" class="loginDate">{{ month }}月{{ date }}日 {{ week }}</div>
                     <div id="loginFrame_Panel_Load" class="loginLoading"></div>
                     <div id="loginFrame_Panel_Form" class="loginForm">	
                         <div class="loginTitle">欢迎</div>	
@@ -22,7 +22,7 @@
                         <div id="loginFrame_Panel_Slider" class="loginSlider">
                             <div class="track">
                                 <div class="track-message" :style="{opacity:this.msgOpt}">移动滑块来登录</div>
-                                <div class="handle" ref="loginSlider" @mousedown="mousedown" @mouseup="mouseup" :style="{left:this.moveLeft + 'px'}"></div>
+                                <div class="handle" ref="handle" @mousedown="mousedown" @mouseup="mouseup" :style="{left:this.moveLeft + 'px'}"></div>
                             </div>
                         </div>
                     </div>
@@ -34,9 +34,9 @@
 </template>
 
 <script>
-import {getTodayPic,Login} from '../API/api.js'
+import {Login} from '../API/api.js'
 import VueCookies from 'vue-cookies'
-
+import { getLunar } from 'chinese-lunar-calendar'
 import $ from "jquery";
 import toastr from "../../public/Toaster/toastr.js";
 import {encrypt} from '@/common/crypto'
@@ -45,6 +45,13 @@ export default {
     name: 'LoginPage',
     data() {
         return {
+            year: 0,
+            month: 0,
+            date: 0,
+            hour: 0,
+            minutes: 0,
+            day: 0,
+            week: '',
             tadayPic:'default.jpg',
             beginleft:0,
             moveLeft:0,
@@ -57,79 +64,98 @@ export default {
     },
     created(){
         var userData = VueCookies.get('TUser');
-        console.log(userData)
+        // console.log(userData)
         if(userData.loginStatus){
             console.log('/')
             location.href = "/DeskTop"
         }
     },
-    mounted(){
-        $('#loginFrame_Panel_Form').css({'left':'50%','opacity':1,'transition-property':'all','transition-duration':'0s','transition-timing-function':'ease'})
-        var loginSlider = this.$refs.loginSlider;
-        var htm = this.$refs.htm;
-        var that = this;
-        
-        loginSlider.addEventListener('mousedown', (e)=> {
-            this.beginleft = e.clientX;
-            htm.addEventListener('mousemove', setLeft)
-        })
-        htm.addEventListener('mouseup', ()=> {
-            htm.removeEventListener('mousemove',setLeft)
-            if(this.moveLeft<=this.max){
-                reset()   
+    methods: {
+        init:function () {
+            var now = new Date();
+            this.year = now.getFullYear();
+            this.month = now.getMonth() + 1;
+            this.date = now.getDate();
+            this.hour = now.getHours();
+            this.minutes = now.getMinutes();
+            this.day = now.getDay();
+            this.week = now.getSysWeek();
+        },
+        initHandle:function () {
+            $('#loginFrame_Panel_Form').css({'left':'50%','opacity':1,'transition-property':'all','transition-duration':'0s','transition-timing-function':'ease'})
+            var handle = this.$refs.handle;
+            var htm = this.$refs.htm;
+            
+            handle.addEventListener('mousedown', (e)=> {
+                this.beginleft = e.clientX;
+                htm.addEventListener('mousemove', this.setLeft)
+            })
+            htm.addEventListener('mouseup', ()=> {
+                htm.removeEventListener('mousemove',this.setLeft)
+                if(this.moveLeft<=this.max){
+                    this.reset()   
+                }
+                if($(handle).css("left").replace(/[^0-9]/g, "") == this.max){
+                    this.login();
+                }
+            })
+        },
+        setLeft:function (e) {
+            this.moveLeft = e.pageX-this.beginleft;
+            this.msgOpt = Math.max(0, 1 - 2 * this.moveLeft / this.max);
+            if(this.moveLeft<=this.min){
+                this.moveLeft=this.min
+            }else if(this.moveLeft>=this.max){
+                this.moveLeft=this.max
             }
-            if($(loginSlider).css("left").replace(/[^0-9]/g, "") == this.max){
-                login();
-            }
-        })
-        function setLeft(e) {
-            that.moveLeft = e.pageX-that.beginleft;
-            that.msgOpt = Math.max(0, 1 - 2 * that.moveLeft / that.max);
-            if(that.moveLeft<=that.min){
-                that.moveLeft=that.min
-            }else if(that.moveLeft>=that.max){
-                that.moveLeft=that.max
-            }
-        }
-        function reset() {
-            that.moveLeft=0;
-            loginSlider.animate({
+        },
+        reset:function () {
+            this.moveLeft=0;
+            var handle = this.$refs.handle;
+            handle.animate({
                 left: 0
             }, 400);
-            loginSlider.animate({
+            handle.animate({
                 opacity: 1
             }, 400)
-        }
-        getTodayPic('deskData/getTodayPic.json').then(res=>{
-            console.log(res);
-            if(res.status==200){
-                var data = res.data;
-                that.tadayPic=data.imgWrapper;
-            }
-        },err=>{
-         console.log(err);
-         
-        });
-        function login() {
-            if(that.username==''){
-                toastr.warning('请输入您的用户名！')
-                $("#userName").focus();
-                playSound('warn');
+        },
+        getTodayPic:function () {
+            var trans=["小寒","大寒","立春","雨水","惊蛰","春分","清明","谷雨","立夏","小满","芒种","夏至","小暑","大暑","立秋","处暑","白露","秋分","寒露","霜降","立冬","小雪","大雪","冬至"]
+            
+            // 获取农历
+            var getLunarDay = getLunar(this.year, this.month, this.date)
+            var solarTerm = getLunarDay.solarTerm;
+            if(!solarTerm){
+                this.tadayPic='wrapper/day'+this.day+'.jpg';
             }else{
-                if(that.password==''){
-                    toastr.warning('请输入您的密码！')
-                    $("#password").focus();
-                    playSound('warn');
-                }else{
-                    $('#loginFrame_Panel_Load').css('display','block')
-                    postLogin();
+                var i = trans.length;
+                while (i--) {
+                    if (trans[i] === solarTerm) {
+                        this.tadayPic='wrapper/SolarTerm'+i+'.jpg';
+                    }
                 }
             }
-        }
-        function postLogin() {
+        },
+        login:function () {
+            if(this.username==''){
+                toastr.warning('请输入您的用户名！')
+                $("#userName").focus();
+                this.playSound('warn');
+            }else{
+                if(this.password==''){
+                    toastr.warning('请输入您的密码！')
+                    $("#password").focus();
+                    this.playSound('warn');
+                }else{
+                    $('#loginFrame_Panel_Load').css('display','block')
+                    this.postLogin();
+                }
+            }
+        },
+        postLogin:function () {
             //进入桌面
-            const name = that.username;
-            const pass = encrypt(that.password)
+            const name = this.username;
+            const pass = encrypt(this.password)
             Login('api/Login',{name:name,pass:pass}).then(res=>{
                 
                 console.log(res);
@@ -137,19 +163,23 @@ export default {
                     var data = res.data;
                     console.log('已登录，进入桌面！')
                     VueCookies.set('TUser',data)
-                    playSound('desktop');
+                    this.playSound('desktop');
                     location.href = "/DeskTop"
                 }
                 },err=>{
                     console.log(err);
                     toastr.warning('服务器错误！'+err.message)
             });
-        }
-        function playSound(soundType) {
+        },
+        playSound:function (soundType) {
             var soundTag = document.getElementById(soundType+"_sound");
-            soundTag.play()
+            soundTag.play();
         }
-        
+    },
+    mounted(){
+        this.init();
+        this.initHandle();
+        this.getTodayPic();
     }
 }
 </script>

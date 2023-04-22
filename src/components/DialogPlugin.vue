@@ -1,20 +1,19 @@
 <template>
     <div class="DialogPlugin" v-if="showDialogPlugin">
         <div id="DialogPlugin_item" v-for="(item, index) in listApp" :key="item.appID">
-            <div :id="'dialog-'+index" class="dialog" :style="{'width':width,'height':height,left:this.moveLeft + 'px',top:this.moveTop + 'px'}">
+            <div :id="'dialog-'+index" class="dialog" :style="{'width':item.width + 'px','height':item.height + 'px'}">
                 <div class="bar">
-                    <img :src="require('@/webApp/Account/user.png')">
-                    <!-- <img :src="require(item.icons)"> -->
-                    <span class="title">{{ title }}</span>
-                    <a class="close" @click="$emit('clickClose')"></a>
+                    <img :src="item.appUrl+item.icons">
+                    <span class="title">{{item.shortName}}</span>
+                    <a class="close" @click="$emit('clickClose',item.appID)"></a>
                     <a class="max" @click="clickMax(index)"></a>
                     <a class="min" @click="clickMin(index)"></a>
                 </div>
                 <div class="main">
                     <div class="leftbar"></div>
-                    <div class="winSize" v-if="showSize"><div class="sizeText">^_^&nbsp;窗体调整中...</div></div>
-                    <div class="content" v-else>
-                        <iframe :src="require('@/views/LoginPage.vue')" frameborder="0" marginwidth="0" marginheight="0"></iframe>
+                    <div class="winSize"><div class="sizeText">^_^&nbsp;窗体调整中...</div></div>
+                    <div class="content">
+                        <iframe src="/webApp/Account/index.html" frameborder="0" marginwidth="0" marginheight="0"></iframe>
                     </div>
                     <div class="rightbar"></div>
                 </div>
@@ -32,9 +31,6 @@
         name: 'DialogPlugin',
         data() {
             return {
-                showSize:false,
-                moveLeft:480,
-                moveTop:110,
                 beginLeft:0,
                 beginTop:0,
                 ifMax:false,
@@ -43,26 +39,50 @@
                 Dleft:0,
                 Dwidth:0,
                 Dheight:0,
-                DzIndex:0
+                DzIndex:0,
+                index:0
             }
         },
-        props:['title','width','height','showDialogPlugin','listApp'],
+        props:['showDialogPlugin','listApp'],
         methods: {
             barMoveDown:function(event,index){
-                this.showSize=true;
-                console.log(event)
-                console.log(event.clientX,'坐标',event.clientY)
+                this.index=index;
+                this.zindex = $("#dialog-"+index).css('z-index');
+                if(this.zindex=='auto'){
+                    this.zindex=500;
+                }
+                this.zindex=parseInt(this.zindex)+10;
+                $("#dialog-"+this.index).css({
+                    'z-index':this.zindex
+                });
+                $("#dialog-"+this.index).find(".winSize").css({
+                    'display':'block'
+                })
+                $("#dialog-"+this.index).find(".content").css({
+                    'display':'none'
+                })
+
                 this.beginTop = event.clientY - parseInt($("#dialog-"+index).css("top"));
                 this.beginLeft = event.clientX - parseInt($("#dialog-"+index).css("left"));
-                $(document).bind("mousemove", this.moveGo)
+                $(document).bind("mousemove", this.moveGo);
+
+                this.setDialogPlugin(index);
             },
             barMoveUp:function(){
-                this.showSize=false;
+                $("#dialog-"+this.index).find(".winSize").css({
+                    'display':'none'
+                })
+                $("#dialog-"+this.index).find(".content").css({
+                    'display':'block'
+                })
             },
             moveGo:function(event){
-                console.log(event.clientX ,'移动',event.clientY)
-                this.moveTop = (event.clientY - this.beginTop);
-                this.moveLeft = (event.clientX - this.beginLeft);
+                var top = (event.clientY - this.beginTop);
+                var left = (event.clientX - this.beginLeft);
+                $("#dialog-"+this.index).css({
+                    top:top,
+                    left:left
+                })
             },
             clickMax:function(index){
                 if(this.ifMax){
@@ -123,6 +143,28 @@
                     $("#dialog-"+index).css("z-index", -1);
                 })
             },
+            setDialogPlugin:function (index) {
+                console.log('index'+index)
+                var list = this.listApp;
+                for (let i = 0; i < list.length; i++) {
+                    console.log(i)
+                    if(index==i){
+                        this.setTaskActive(list[i].appID)
+                    }else{
+                        this.setTaskNormal(list[i].appID)
+                    }
+                }
+            },
+            setTaskActive:function (appID) {
+                console.log('active: '+appID)
+                $("#desktopFrame1_Panel_Task_" + appID + "_Button").removeClass();
+                $("#desktopFrame1_Panel_Task_" + appID + "_Button").addClass("ButtonItemActive")
+            },
+            setTaskNormal:function (appID) {
+                console.log('normal: '+appID)
+                $("#desktopFrame1_Panel_Task_" + appID + "_Button").removeClass();
+                $("#desktopFrame1_Panel_Task_" + appID + "_Button").addClass("ButtonItem")
+            },
             playSound:function(soundType){
                 var soundTag = document.getElementById(soundType+"_sound");
                 soundTag.play()
@@ -130,7 +172,12 @@
         },
         mounted(){
             $(document).bind("mouseup", function() {
-                this.showSize=false;
+                $("#dialog-"+this.index).find(".winSize").css({
+                    'display':'none'
+                })
+                $("#dialog-"+this.index).find(".content").css({
+                    'display':'block'
+                })
                 $(document).unbind("mousemove")
             });
         }
@@ -139,9 +186,8 @@
 
 <style>
 .dialog {
-    z-index: 504;
     position: absolute;
-    top: 109.5px;
+    top: 110px;
     left: 480px;
     opacity: 1;
     transition-property: all;
@@ -240,6 +286,7 @@
     right: 5px;
     bottom: 5px;
     position: absolute;
+    display: none;
 }
 .dialog .main .winSize .sizeText {
     position: absolute;
@@ -355,5 +402,9 @@
     color: #5f5f5f;
     padding: 3px;
     height: 32px;
+}
+.DialogPlugin iframe{
+    width: 100%;
+    height: 100%;
 }
 </style>

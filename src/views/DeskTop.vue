@@ -11,7 +11,7 @@
               <div id="desktopFrame1_Panel_Task_home" class="HomeButton" @click="clickStartMenu"></div>
               <div class="StartMenu" v-show="showStartMenu">
                 <div class="AppList"> 
-
+                    <StartApp :installApp="installApp" @click-StartApp="clickStartApp"/>
                 </div>
                 <div class="UserOperate">
                   <div class="DoLock"><i class="fa fa-lock"></i>&nbsp;锁 定</div>
@@ -150,7 +150,8 @@
     :width="width" 
     :height="height" 
     :showDialog="showDialog" 
-    :menuType="menuType" 
+    :menuType="menuType"
+    :zindex="zindex" 
     @click-Ok="clickLiginOutOk"
      @click-Cancel="clickCancel" 
      @click-close="clickCloseDialog"/>
@@ -160,12 +161,13 @@
     :height="dialogPluginHeight" 
     :showDialogPlugin="showDialogPlugin"
     :listApp="listApp"
-    @click-close="clickCloseDialog"/>
+    :zindex="zindex" 
+    @click-close="clickCloseDialogPlugin"/>
   </div>
 </template>
 
 <script setup>
-    import { ref , onMounted, onBeforeMount} from 'vue'
+    import { ref , onMounted} from 'vue'
     import { getLunar } from 'chinese-lunar-calendar'
     import $ from "jquery";
     import toastr from "../../public/Toaster/toastr.js";
@@ -174,6 +176,7 @@
     import DialogPage from "@/components/DialogPage.vue";
     import DialogPagePlugin from "@/components/DialogPlugin.vue";
     import PannelTask from "@/components/PannelTask.vue";
+    import StartApp from "@/components/StartApp.vue";
     import { useRouter } from 'vue-router'
     const router = useRouter()
 
@@ -190,8 +193,9 @@
 
     const installApp=ref();
 
-    const listApp=ref();
+    const listApp=ref([]);
     const showPannelTask=ref(false)
+    const zindex=ref(500)
 
     const Time1=ref();
     const Time2=ref();
@@ -350,7 +354,7 @@
                 hourHandColor: "#1199ec",
                 alarmHandColor: "#D84C49",
                 alarmHandTipColor: "#DDBD45",
-                showNumerals: !0,
+                showNumerals: true,
                 brandText: "ThingsLabs"
             });
     }
@@ -521,6 +525,8 @@
         menuType.value='userPass';
         playSound('rest')
     }
+
+    // diolog 操作
     function fullScreen(){
         showUserMenu.value=false;
         playSound('rest')
@@ -535,42 +541,95 @@
         document.exitFullscreen ? document.exitFullscreen() : document.mozCancelFullScreen ? document.mozCancelFullScreen() : document.webkitCancelFullScreen ? document.webkitCancelFullScreen() : document.msExitFullscreen && document.msExitFullscreen();
     }
     function UserCenter(){
-        // if(showDialogPlugin.value){
-        //     showUserMenu.value=false;
-        //     return false;
-        // }
-        dialogPluginTitle.value='个人中心';
-        dialogPluginWidth.value='960px';
-        dialogPluginHeight.value='678px';
         showDialogPlugin.value=true;
         showUserMenu.value=false;
-        // var AppId = '0CB4D644-896A-4ADA-9D5F-58448BD04498';
         playSound('rest')
         //
-        var aList=[]
         showPannelTask.value=true;
+        var aList=listApp.value;
         aList.push(installApp.value[0]);
+        aList=arreryFiter(aList);
         listApp.value=aList;
     }
-
+    function clickCloseDialogPlugin(index){
+        console.log('点击关闭')
+        playSound('close')
+        var aList=listApp.value;
+        if(aList.length==0){
+            showDialogPlugin.value=false;
+            showPannelTask.value=false;
+        }else{
+            for (let i = 0; i < aList.length; i++) {
+                const element = aList[i];
+                if(element.appID==index){
+                    aList.splice(i,1);
+                }
+            }
+            listApp.value=aList;
+        }
+        
+    }
     function clickPannelTask(index){
         console.log('index'+index)
         showDialogPlugin.value=true;
         playSound("rest");
-        $("#dialog-"+index).removeClass();
-        $("#dialog-"+index).addClass("dialog");
-        $("#dialog-"+index).css("z-index", 1000000);
-        $("#dialog-"+index).animate({
-            top: listApp.value[index].top,
-            left: listApp.value[index].left,
-            width: listApp.value[index].width,
-            height: listApp.value[index].height,
-            avoidTransforms: false,
-            useTranslate3d: true,
-            opacity: 1
-        }, "normal", function() {
-            $("#dialog-"+index).find(".content iframe").fadeIn("fast")
-        });
+        var top = $("#dialog-"+index).css('top');
+        if(top<-600){
+            $("#dialog-"+index).removeClass();
+            $("#dialog-"+index).addClass("dialog");
+            $("#dialog-"+index).css("z-index", (zindex.value+10));
+            $("#dialog-"+index).animate({
+                top: listApp.value[index].top,
+                left: listApp.value[index].left,
+                width: listApp.value[index].width,
+                height: listApp.value[index].height,
+                avoidTransforms: false,
+                useTranslate3d: true,
+                opacity: 1
+            }, "normal", function() {
+                $("#dialog-"+index).find(".content iframe").fadeIn("fast")
+            });
+        }else{
+            $("#dialog-"+index).css("z-index", (zindex.value+10));
+        }
+        setDialogPlugin(index);
+        
+    }
+    function setDialogPlugin (index) {
+        console.log('index'+index)
+        var list = listApp.value;
+        for (let i = 0; i < list.length; i++) {
+            console.log(i)
+            if(index==i){
+                setTaskActive(listApp.value[i].appID)
+            }else{
+                setTaskNormal(listApp.value[i].appID)
+            }
+        }
+    }
+    function setTaskActive (appID) {
+        console.log('active: '+appID)
+        $("#desktopFrame1_Panel_Task_" + appID + "_Button").removeClass();
+        $("#desktopFrame1_Panel_Task_" + appID + "_Button").addClass("ButtonItemActive")
+    }
+    function setTaskNormal (appID) {
+        console.log('normal: '+appID)
+        $("#desktopFrame1_Panel_Task_" + appID + "_Button").removeClass();
+        $("#desktopFrame1_Panel_Task_" + appID + "_Button").addClass("ButtonItem")
+    }
+
+    // 
+    function clickStartApp(index){
+        playSound("rest");
+        showStartMenu.value=false
+        showPannelTask.value=true;
+        showDialogPlugin.value=true;
+        var aList=listApp.value;
+        aList.push(installApp.value[index]);
+        aList=arreryFiter(aList);
+        aList[index].active=true;
+        listApp.value=aList;
+        setDialogPlugin(index);
     }
     
 
@@ -579,14 +638,23 @@
         var soundTag = document.getElementById(soundType+"_sound");
         soundTag.play()
     }
+    function arreryFiter(arrObj){
+        const map = new Map();
+        const newArr = arrObj.filter(value => !map.has(value.appID) && map.set(value.appID, 1));
+        return newArr;
+    }
 
     function init(){
         var userData = VueCookies.get('TUser');
-        console.log(userData)
+        // console.log(userData)
         var userID = userData.userID;
         readConfig('api/readConfig',{userID:userID}).then(res=>{
-            console.log(res.data);
+            // console.log(res.data);
             installApp.value = res.data.installApp;
+            if(res.data.system.myTheme){
+                // console.log('添加主题！')
+                document.getElementById("mytheme").href ="/Theme/"+ res.data.system.myTheme + "/theme.css"
+            }
 
         },err=>{
             console.log(err);
@@ -600,10 +668,6 @@
         initClockList();
         getCityTag();
         playSound('desktop')
-    })
-    onBeforeMount(()=>{
-        var userData = VueCookies.get('TUser');
-        console.log(userData)
     })
 </script>
 

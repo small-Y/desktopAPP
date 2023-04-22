@@ -10,9 +10,6 @@ export function getLogin(url,params){
 export function Login(url,params){
     return axios.post(url,params);
 }
-export function getTodayPic(url){
-    return axios.get(url);
-}
 export function getCityList(url){
     return axios.get(url);
 }
@@ -24,7 +21,6 @@ export function readConfig(url,params){
 }
 
 export default {
-    getTodayPic,
     getCityList,
     getLogin,
     postLoginOut,

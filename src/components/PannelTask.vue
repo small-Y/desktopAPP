@@ -1,15 +1,15 @@
 <template>
-    <div v-if="showPannelTask">
+    <div class="pannelTask" v-if="showPannelTask">
         <div class="pannelTask_item" v-for="(item, index) in listApp" :key="index"  @click="$emit('clickTask',index)">
-            <li :id="'desktopFrame1_Panel_Task_'+index">
+            <li :id="'desktopFrame1_Panel_Task_'+item.appID">
                 <div class="icon">
                     <div class="label">
-                        <em>个人中心</em>
+                        <em>{{ item.shortName }}</em>
                         <span class="pointer"></span>
                     </div>
                 </div>
-                <div id="desktopFrame1_Panel_Task_0CB4D644-896A-4ADA-9D5F-58448BD04498_Button" class="ButtonItemActive">
-                    <img src="@/webApp/Account/user.png" onmousedown="return false;">
+                <div :id="'desktopFrame1_Panel_Task_'+item.appID+'_Button'" :class="item.active?'ButtonItemActive':'ButtonItem'">
+                    <img :src="item.appUrl+item.icons" onmousedown="return false;">
                 </div>
             </li>
         </div>
@@ -25,6 +25,9 @@ export default {
 </script>
 
 <style>
+.pannelTask{
+    display: flex;
+}
 .taskbar .TaskButton li .icon {
     line-height: 20px;
 }
@@ -67,6 +70,12 @@ export default {
     height: 38px;
     border-top: 2px solid rgba(255,255,255,1);
     background: rgba(255,255,255,.4);
+}
+.taskbar .TaskButton .ButtonItem {
+    cursor: pointer;
+    width: 50px;
+    height: 38px;
+    border-top: 2px solid rgba(255,255,255,.5);
 }
 .taskbar .TaskButton li img {
     width: 32px;

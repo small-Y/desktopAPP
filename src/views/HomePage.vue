@@ -24,7 +24,7 @@ setTimeout(() => {
     var timer;
     clearInterval(timer==''?timer:'');
     timer = setInterval(() => {
-        console.log('实时登录验证')
+        // console.log('实时登录验证')
         oneTimeLogin();
     }, 2000);
 }, 500);
@@ -37,7 +37,7 @@ function oneTimeLogin() {
     }
     getLogin('api/getLogin',{username:username}).then(res=>{
         if(JSON.stringify(res.data) == "{}"){
-            console.log('/')
+            // console.log('/')
             router.push({ name: 'Login'})
         }
         if(res.status==200){
