@@ -1,0 +1,1388 @@
+.desktop {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    z-index: 0;
+    overflow: hidden;
+    font: 12px Arial,Tahoma,微软雅黑;
+    color: #fff;
+    cursor: default;
+}
+.desktopWrapper{
+  position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background: transparent url(/static/images/default.jpg) repeat center top;
+    z-index: -1;
+}
+.desktopWrapper img{
+  width:"100%" ;
+  height:"100%";
+  position:absolute;
+  top:0;
+  left:0;
+  z-index:-1
+}
+.desktopPanel {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+}
+.taskbar {
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  background: rgba(0,0,0,0.25);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 500;
+}
+.homepanel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+.homewidget {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    display: none;
+}
+.taskbar .SystemButton {
+    height: 40px;
+    width: 165px;
+    padding: 0 10px;
+    background: url(/static/images/desktop/TaskbarPoints.png) no-repeat right top;
+}
+.taskbar .SystemButton ul {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+    height: 40px;
+}
+.taskbar .SystemButton .HomeButton {
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    background: url(/static/images/desktop/start1.png) no-repeat;
+}
+.taskbar .SystemButton .HomeButton:hover {
+    background: url(/static/images/desktop/start2.png) no-repeat
+}
+
+.taskbar .SystemButton .HomeButton.active {
+    background: url(/static/images/desktop/start2.png) no-repeat
+}
+.taskbar .SystemButton li {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    padding: 4px 10px;
+}
+.taskbar .SystemButton li:hover {
+    background: rgba(255,255,255,.3);
+}
+.taskbar .SystemButton .StartMenu {
+    position: absolute;
+    top: 45px;
+    left: 5px;
+    width: 290px;
+    height: 415px;
+    background: #fafafa;
+    border: 1px solid #ddd;
+    -moz-box-shadow: 5px 5px 30px rgba(0,0,0,0.5);
+    -webkit-box-shadow: 5px 5px 30px rgba(0,0,0,0.5);
+    box-shadow: 5px 5px 30px rgba(0,0,0,0.5);
+    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=25,Direction=135,Color='#888');
+    z-index: 9999;
+}
+.taskbar .SystemButton .StartMenu .AppList {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 40px;
+    display: table-cell;
+    padding: 5px 0 0 3px;
+    overflow: auto;
+}
+.taskbar .SystemButton .StartMenu .UserOperate {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    bottom: 0;
+    color: #000;
+    background: #fff;
+    border-top: 1px solid #ddd;
+}
+.taskbar .SystemButton .StartMenu .pointer {
+    position: absolute;
+    top: -10px;
+    left: 30px;
+    bottom: -10px;
+    margin-left: -10px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 0;
+    border-bottom: 10px solid #fafafa;
+}
+.taskbar .SystemButton .StartMenu .UserOperate .DoLock {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 40px;
+    text-align: center;
+    font-size: 12pt;
+    opacity: .6;
+    cursor: pointer;
+}
+.taskbar .SystemButton .StartMenu .UserOperate .DoLock:hover {
+    opacity: 1
+}
+.taskbar .SystemButton .StartMenu .UserOperate .Logout {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 50%;
+    height: 40px;
+    border-left: 1px solid #ddd;
+    text-align: center;
+    font-size: 12pt;
+    opacity: .6;
+    cursor: pointer;
+}
+.taskbar .SystemButton .StartMenu .UserOperate .Logout:hover {
+    opacity: 1
+}
+.taskbar .SystemButton .ApplyButton {
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    background: url(/static/images/desktop/appcenter1.png) no-repeat;
+}
+.taskbar .SystemButton .ApplyButton:hover {
+    background: url(/static/images/desktop/appcenter2.png) no-repeat
+}
+
+.taskbar .SystemButton .ApplyButton.active {
+    background: url(/static/images/desktop/appcenter2.png) no-repeat
+}
+.taskbar .SystemButton .AppMenu {
+    position: absolute;
+    top: 45px;
+    left: 30px;
+    width: 380px;
+    height: 450px;
+    background: #fafafa;
+    border: 1px solid #ddd;
+    -moz-box-shadow: 5px 5px 30px rgba(0,0,0,0.5);
+    -webkit-box-shadow: 5px 5px 30px rgba(0,0,0,0.5);
+    box-shadow: 5px 5px 30px rgba(0,0,0,0.5);
+    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=25,Direction=135,Color='#888');
+    border-radius: 1px;
+    -moz-border-radius: 1px;
+    -webkit-border-radius: 1px;
+    z-index: 9999;
+}
+.taskbar .SystemButton .AppMenu .AppList {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    bottom: 40px;
+}
+.taskbar .SystemButton .AppMenu .pointer {
+    position: absolute;
+    top: -10px;
+    left: 60px;
+    bottom: -10px;
+    margin-left: -10px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 0;
+    border-bottom: 10px solid #fafafa;
+}
+.taskbar .SystemButton .StartMenu .AppList .item {
+    width: 85px;
+    height: 80px;
+    padding: 5px 2px 0 2px;
+    line-height: 16px;
+    color: #666;
+    font-size: 14px;
+    text-align: center;
+    display: inline-block;
+    cursor: pointer;
+}
+.taskbar .SystemButton .StartMenu .AppList .item:hover {
+    background: rgba(0,0,0,.1)
+}
+.taskbar .SystemButton .StartMenu .AppList .item:hover span {
+    color: #000
+}
+.taskbar .SystemButton .StartMenu .AppList .item img {
+    width: 54px;
+    height: 54px
+}
+.taskbar .SystemButton .AppMenu .AppList .tab1 {
+    position: absolute;
+    top: 2px;
+    left: 80px;
+    width: 80px;
+    height: 4px;
+    border: 8px solid #fafafa;
+    border-bottom: 6px solid #fafafa;
+    background: #ddd;
+    cursor: pointer;
+}
+.taskbar .SystemButton .AppMenu .AppList .tab1.active {
+    background: #9cf
+}
+.taskbar .SystemButton .AppMenu .AppList .tab1content {
+    position: absolute;
+    top: 15px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: table-cell;
+    padding: 10px 0 5px 5px;
+    overflow: auto;
+    overflow-x: hidden;
+}
+.taskbar .SystemButton .AppMenu .AppList .tab2 {
+    position: absolute;
+    top: 2px;
+    left: 175px;
+    width: 80px;
+    height: 4px;
+    border: 8px solid #fafafa;
+    border-bottom: 6px solid #fafafa;
+    background: #ddd;
+    cursor: pointer;
+}
+.taskbar .SystemButton .AppMenu .AppList .tab2.active {
+    background: #9cf
+}
+.taskbar .SystemButton .AppMenu .AppList .tab2content {
+    position: absolute;
+    top: 15px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: table-cell;
+    padding: 10px 0 5px 5px;
+    overflow: auto;
+    overflow-x: hidden;
+}
+.taskbar .SystemButton .AppMenu .AppSearch {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    bottom: 0;
+    color: #ccc;
+    background: #fff;
+    border-top: 1px solid #ddd;
+}
+.taskbar .SystemButton .AppMenu .AppSearch .searchBtn {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: 20px;
+    padding: 0 10px;
+    font-size: 14pt;
+}
+.taskbar .SystemButton .AppMenu .AppSearch .searchKey {
+    position: absolute;
+    top: 8px;
+    left: 40px;
+    width: 250px;
+    height: 24px;
+    border: 0 solid #ddd;
+}
+.taskbar .SystemButton .AppMenu .AppSearch .edit {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50px;
+    height: 24px;
+    font-size: 16px;
+    color: #09f;
+    cursor: pointer;
+}
+.taskbar .SystemButton .AppMenu .pointer {
+    position: absolute;
+    top: -10px;
+    left: 60px;
+    bottom: -10px;
+    margin-left: -10px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 0;
+    border-bottom: 10px solid #fafafa;
+}
+.taskbar .SystemButton .ThemeButton {
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    background: url(/static/images/desktop/theme1.png) no-repeat;
+}
+.taskbar .SystemButton .ThemeButton:hover {
+    background: url(/static/images/desktop/theme2.png) no-repeat
+}
+
+.taskbar .SystemButton .ThemeButton.active {
+    background: url(/static/images/desktop/theme2.png) no-repeat
+}
+.taskbar .SystemButton .ThemeMenu {
+    position: absolute;
+    top: 45px;
+    left: 70px;
+    width: 420px;
+    height: 560px;
+    background: #fafafa;
+    border: 1px solid #ddd;
+    -moz-box-shadow: 5px 5px 30px rgba(0,0,0,0.5);
+    -webkit-box-shadow: 5px 5px 30px rgba(0,0,0,0.5);
+    box-shadow: 5px 5px 30px rgba(0,0,0,0.5);
+    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=25,Direction=135,Color='#888');
+    border-radius: 1px;
+    -moz-border-radius: 1px;
+    -webkit-border-radius: 1px;
+    z-index: 9999;
+}
+.taskbar .SystemButton .ThemeMenu .ThemeList {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    bottom: 40px;
+}
+.taskbar .SystemButton .ThemeMenu .ThemeList .tab1 {
+    position: absolute;
+    top: 2px;
+    left: 110px;
+    width: 80px;
+    height: 4px;
+    border: 8px solid #fafafa;
+    border-bottom: 6px solid #fafafa;
+    background: #ddd;
+    cursor: pointer;
+}
+.taskbar .SystemButton .ThemeMenu .ThemeList .tab1.active {
+    background: #9cf
+}
+.taskbar .SystemButton .ThemeMenu .ThemeList .tab1content {
+    position: absolute;
+    top: 15px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: table-cell;
+    padding: 10px 0 5px 10px;
+    overflow: auto;
+    overflow-x: hidden;
+}
+.taskbar .SystemButton .ThemeMenu .ThemeList .tab2 {
+    position: absolute;
+    top: 2px;
+    left: 205px;
+    width: 80px;
+    height: 4px;
+    border: 8px solid #fafafa;
+    border-bottom: 6px solid #fafafa;
+    background: #ddd;
+    cursor: pointer;
+}
+.taskbar .SystemButton .ThemeMenu .ThemeList .tab2.active {
+    background: #9cf
+}
+.taskbar .SystemButton .ThemeMenu .ThemeList .tab2content {
+    position: absolute;
+    top: 15px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: table-cell;
+    padding: 10px 0 5px 10px;
+    overflow: auto;
+    overflow-x: hidden;
+}
+.taskbar .SystemButton .ThemeMenu .ThemeSearch {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    bottom: 0;
+    color: #ccc;
+    background: #fff;
+    border-top: 1px solid #ddd;
+}
+.taskbar .SystemButton .ThemeMenu .ThemeSearch .searchBtn {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: 20px;
+    padding: 0 10px;
+    font-size: 14pt;
+}
+.taskbar .SystemButton .ThemeMenu .ThemeSearch .searchBtn:hover {
+    color: #000
+}
+.taskbar .SystemButton .ThemeMenu .ThemeSearch .searchKey {
+    position: absolute;
+    top: 8px;
+    left: 40px;
+    width: 320px;
+    height: 24px;
+    border: 0 solid #ddd;
+}
+.taskbar .SystemButton .ThemeMenu .ThemeSearch .edit {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50px;
+    height: 24px;
+    font-size: 16px;
+    color: #09f;
+    cursor: pointer;
+}
+.taskbar .SystemButton .ThemeMenu .pointer {
+    position: absolute;
+    top: -10px;
+    left: 75px;
+    bottom: -10px;
+    margin-left: -10px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 0;
+    border-bottom: 10px solid #fafafa;
+}
+.taskbar .TaskButton {
+    position: absolute;
+    top: 0;
+    left: 190px;
+    right: 320px;
+    height: 40px;
+    overflow: hidden;
+}
+.taskbar .TaskButton ul {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+    height: 40px;
+}
+.taskbar .TaskStatus {
+    position: absolute;
+    top: 0;
+    right: 10px;
+    height: 40px;
+    width: 270px;
+    font-size: 16px;
+    color: #fff;
+}
+.taskbar .TaskStatus .WeatherList {
+    position: absolute;
+    top: 45px;
+    right: 60px;
+    height: 270px;
+    width: 250px;
+    padding: 5px 15px;
+    color: #ccc;
+    font-size: 10pt;
+    background: #fafafa;
+    background: url(/static/images/weatherImg/100n.png);
+    background-repeat: no-repeat;
+    background-position: left top;
+    background-size: auto 100%;
+    -moz-box-shadow: 5px 5px 30px rgba(0,0,0,0.5);
+    -webkit-box-shadow: 5px 5px 30px rgba(0,0,0,0.5);
+    box-shadow: 5px 5px 30px rgba(0,0,0,0.5);
+    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=25,Direction=135,Color='#888');
+    border-radius: 1px;
+    -moz-border-radius: 1px;
+    -webkit-border-radius: 1px;
+    z-index: 9998;
+}
+.taskbar .TaskStatus .WeatherList .pointer {
+    position: absolute;
+    top: -10px;
+    right: 172px;
+    bottom: -10px;
+    margin-left: -10px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 0;
+    border-bottom: 10px solid #fafafa;
+}
+.taskbar .TaskStatus .WeatherList .today {
+    border-bottom: 1px solid #ccc;
+    height: 125px;
+}
+.taskbar .TaskStatus .WeatherList .today ul {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+    height: 125px;
+}
+.taskbar .TaskStatus .WeatherList .today ul .weatherCity{
+    position: relative;
+    top: 0px;
+    left: 10px;
+}
+.taskbar .TaskStatus .WeatherList .today ul .weatherIcon{
+    width: 48px;
+    height: 48px;
+    position: absolute;
+}
+.taskbar .TaskStatus .WeatherList .today ul .weatherIcon img{
+    width: 48px;
+    height: 48px;
+}
+.taskbar .TaskStatus .WeatherList .today ul .weatheriInfo{
+    position: relative;
+    top: 20px;
+    left: 45px;
+    font-size: 25px;
+}
+.taskbar .TaskStatus .WeatherList .today ul .weatherFeelsLike{
+    position: relative;
+    top: 80px;
+    left: -15px;
+}
+.taskbar .TaskStatus .WeatherList .today ul .weatherText{
+    position: relative;
+    top: 52px;
+    left: -70px;
+}
+.taskbar .TaskStatus .WeatherList .today ul .weatherWindDir{
+    position: relative;
+    top: 30px;
+    left: 10px;
+}
+.taskbar .TaskStatus .WeatherList .today ul .weatherHumidity{
+    position: absolute;
+    top: 70px;
+    right: 20px;
+    width: 60px;
+    display: inline-block;
+}
+
+.taskbar .TaskStatus .WeatherList .future {
+    padding: 10px 0;
+    text-align: center;
+    font-size: 10.5pt;
+    color: #ccc;
+}
+.taskbar .TaskStatus .WeatherList .future ul {
+    display: inline-block;
+    padding: 0;
+    margin: 0 10px;
+    display: flex;
+}
+.taskbar .TaskStatus .WeatherList .future ul li {
+    padding: 0;
+    margin: 0 0px;
+    height: 120px;
+    width: 330px;
+    list-style: none;
+}
+.taskbar .TaskStatus .WeatherList .future .weatherBoxImg{
+    width: 22px;
+    height: 22px;
+    margin: auto;
+}
+.taskbar .TaskStatus .WeatherList .future .weatherBoxImg img{
+    width: 22px;
+    height: 22px;
+}
+.taskbar .TaskStatus .Search {
+    position: absolute;
+    top: 0;
+    right: 310px;
+    width: 240px;
+    border-right: 1px solid rgba(255,255,255,0.2);
+}
+.taskbar .TaskStatus .Search input {
+    width: 200px;
+    border: 1px solid #fff;
+    height: 28px;
+    color: black;
+    padding: 5px;
+}
+.taskbar .TaskStatus .Search i {
+    cursor: pointer;
+}
+.taskbar .TaskStatus .Message {
+    position: absolute;
+    top: 0;
+    right: 265px;
+    height: 24px;
+    width: 24px;
+    padding: 8px;
+    cursor: pointer;
+}
+.taskbar .TaskStatus .Message:hover {
+    background: rgba(255,255,255,.3)
+}
+.taskbar .TaskStatus .Message img {
+    height: 24px;
+    width: 24px;
+}
+.taskbar .TaskStatus .Message .number {
+    position: absolute;
+    top: 17px;
+    left: 24px;
+    height: 15px;
+    min-width: 11px;
+    padding: 0 2px;
+    line-height: 15px;
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    border: 1px solid #fff;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    text-align: center;
+}
+.taskbar .TaskStatus .Weather {
+    position: absolute;
+    top: 0;
+    right: 175px;
+    height: 40px;
+    width: 90px;
+    border-right: 1px solid rgba(255,255,255,0.2);
+    cursor: pointer;
+}
+.taskbar .TaskStatus .Weather:hover {
+    border-right: 0 solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,.3)
+}
+
+.taskbar .TaskStatus .Weather .icon {
+    position: absolute;
+    top: 5px;
+    left: 10px;
+    height: 30px;
+    width: 30px;
+}
+.taskbar .TaskStatus .Weather .icon img {
+    height: 30px;
+    width: 30px;
+}
+.taskbar .TaskStatus .Weather .info {
+    position: absolute;
+    top: 5px;
+    left: 35px;
+    height: 30px;
+    width: 50px;
+    text-align: center;
+    line-height: 32px;
+}
+.taskbar .TaskStatus .Sayma {
+    position: absolute;
+    top: 0;
+    right: 132px;
+    height: 24px;
+    width: 24px;
+    padding: 8px;
+    cursor: pointer;
+}
+.taskbar .TaskStatus .Sayma:hover {
+    background: rgba(255,255,255,.3)
+}
+.taskbar .TaskStatus .Sayma img {
+    height: 24px;
+    width: 24px;
+}
+.taskbar .TaskStatus .Clock {
+    position: absolute;
+    top: 0;
+    right: 45px;
+    height: 30px;
+    width: 90px;
+    font-size: 12px;
+    text-align: center;
+    line-height: 16px;
+    padding: 5px 0;
+}
+.taskbar .TaskStatus .Clock:hover {
+    background: rgba(255,255,255,.3)
+}
+.taskbar .TaskStatus .ClockList {
+    position: absolute;
+    top: 45px;
+    right: 0;
+    height: 200px;
+    width: 320px;
+    color: #aaa;
+    font-size: 10.5pt;
+    background: #fafafa;
+    border: 1px solid #ddd;
+    -moz-box-shadow: 5px 5px 30px rgba(0,0,0,0.5);
+    -webkit-box-shadow: 5px 5px 30px rgba(0,0,0,0.5);
+    box-shadow: 5px 5px 30px rgba(0,0,0,0.5);
+    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=25,Direction=135,Color='#888');
+    border-radius: 1px;
+    -moz-border-radius: 1px;
+    -webkit-border-radius: 1px;
+    z-index: 9998;
+}
+.taskbar .TaskStatus .ClockList .pointer {
+    position: absolute;
+    top: -10px;
+    right: 80px;
+    bottom: -10px;
+    margin-left: -10px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 0;
+    border-bottom: 10px solid #fafafa;
+}
+.taskbar .TaskStatus .ClockList .now {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 150px;
+    width: 150px;
+    padding: 30px 0 30px 15px;
+}
+.taskbar .TaskStatus .ClockList .today {
+    position: absolute;
+    top: -5px;
+    left: 150px;
+    height: 180px;
+    width: 150px;
+    padding: 10px;
+    text-align: center;
+}
+.taskbar .TaskStatus .ClockList .day {
+    font-size: 48pt;
+    line-height: 64px;
+    color: #c00;
+}
+.taskbar .TaskStatus .Picture {
+    position: absolute;
+    top: 0;
+    right: 5px;
+    height: 32px;
+    width: 32px;
+    padding: 4px;
+    cursor: pointer;
+}
+.taskbar .TaskStatus .Picture:hover {
+    background: rgba(255,255,255,.3)
+}
+.taskbar .TaskStatus .Picture img {
+    height: 32px;
+    width: 32px;
+    border-radius: 100% 100% 100% 100%;
+    -moz-border-radius: 100% 100% 100% 100%;
+    -webkit-border-radius: 100% 100% 100% 100%;
+}
+.taskbar .TaskStatus .UserMenu {
+    position: absolute;
+    top: 45px;
+    right: 0;
+    height: 225px;
+    width: 100px;
+    padding: 8px;
+    color: #000;
+    font-size: 11pt;
+    background: #fff;
+    border: 1px solid #ddd;
+    -moz-box-shadow: 5px 5px 30px rgba(0,0,0,0.5);
+    -webkit-box-shadow: 5px 5px 30px rgba(0,0,0,0.5);
+    box-shadow: 5px 5px 30px rgba(0,0,0,0.5);
+    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=25,Direction=135,Color='#888');
+    z-index: 9999;
+}
+.taskbar .TaskStatus .UserMenu .pointer {
+    position: absolute;
+    top: -10px;
+    right: 15px;
+    bottom: -10px;
+    margin-left: -10px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 0;
+    border-bottom: 10px solid #fff;
+}
+.taskbar .TaskStatus .UserMenu ul {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+    line-height: 28px;
+}
+.taskbar .TaskStatus .UserMenu li {
+    display: inline-block;
+    width: 100px;
+    height: 24px;
+    padding: 0 0 4px 0;
+    text-align: center;
+    cursor: pointer;
+}
+.taskbar .TaskStatus .UserMenu hr {
+    width: 100px;
+    border: 0;
+    border-bottom: 1px solid #ccc;
+}
+.taskbar .TaskShowDesktop {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 40px;
+    width: 10px;
+    border-left: 1px solid rgba(255,255,255,0.3);
+    cursor: pointer;
+}
+.taskbar .TaskShowDesktop:hover {
+    background: rgba(255,255,255,0.2)
+}
+.homepanel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+.dock {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    font: normal 14px/1 Arial,Tahoma,微软雅黑;
+}
+.dock .apps {
+    position: relative;
+    z-index: 100;
+    display: inline-block;
+    padding: 0 10px;
+    background: url(/static/images/desktop/dock-bg-m.png) repeat-x bottom;
+}
+.dock .apps .l {
+    left: -40px;
+    background: url(/static/images/desktop/dock-bg-l.png) no-repeat right bottom;
+}
+.dock .apps .l, .dock .apps .r {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 40px;
+}
+.dock ul {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+}
+.dock .apps .r {
+    right: -40px;
+    background: url(/static/images/desktop/dock-bg-r.png) no-repeat left bottom;
+}
+.dock .dragapp {
+    position: absolute;
+    z-index: 999999;
+    top: 0;
+    left: 0;
+    width: 70px;
+    height: 70px;
+    cursor: move;
+}
+.taskbar .TaskButton li {
+    display: inline-block;
+    width: 50px;
+    height: 40px;
+}
+
+
+
+
+
+
+
+
+
+
+/* 类别样式 */
+input[type="text"], input[type="password"], textarea {
+    -webkit-appearance: none;
+    outline: 0;
+}
+
+
+
+
+
+/*  */
+.dialog-overlay {
+    width: 100%;
+    height: 937px;
+    z-index: 5503;
+    position: absolute;
+    opacity: 1;
+    background: transparent url(/static/images/desktop/overlay1.png) repeat center top;
+}
+.dialog {
+    z-index: 5504;
+    position: absolute;
+    top: 366px;
+    left: 732px;
+    opacity: 1;
+    background: #c0c0c0 url(/static/images/desktop/frame.png) repeat-x left top;
+    padding: 4px 0 33px 0;
+    -moz-box-shadow: 5px 5px 30px rgba(0,0,0,0.7);
+    -webkit-box-shadow: 5px 5px 30px rgba(0,0,0,0.7);
+    box-shadow: 5px 5px 30px rgba(0,0,0,0.7);
+    border: 1px solid rgba(255,255,255,0.2);
+    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=25,Direction=135,Color='#888');
+}
+.dialog .bar {
+    color: #5f5f5f;
+    padding: 0;
+    height: 32px;
+    cursor: pointer;
+}
+.dialog .bar img {
+    float: left;
+    width: 26px;
+    height: 26px;
+    padding: 1px;
+    margin-left: 6px;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+.dialog .bar .title {
+    float: left;
+    font-family: Arial,Tahoma,微软雅黑;
+    font-size: 14px;
+    margin-top: 4px;
+    margin-left: 4px;
+}
+.dialog .bar .close {
+    float: right;
+    cursor: pointer;
+    margin: 5px 5px 0 5px;
+    width: 24px;
+    height: 24px;
+    background: url(/static/images/desktop/dialog-bt.png) no-repeat;
+    background-position: 0 -166px;
+    font: 12px/1.5 tahoma,helvetica,clean,sans-serif;
+    color: #45649e;
+}
+.dialog .bar .close:hover {
+    background-position: 0 -142px
+}
+.dialog .bar .max {
+    float: right;
+    cursor: pointer;
+    margin: 3px 5px 0 5px;
+    width: 24px;
+    height: 24px;
+    background: url(/static/images/desktop/dialog-bt.png) no-repeat;
+    background-position: 0 -69px;
+}
+.dialog .bar .max:hover {
+    background-position: 0 -45px
+}
+.dialog .bar .min {
+    float: right;
+    cursor: pointer;
+    margin: 3px 5px 0 5px;
+    width: 24px;
+    height: 24px;
+    background: url(/static/images/desktop/dialog-bt.png) no-repeat;
+    background-position: 0 -20px;
+}
+.dialog .bar .min:hover {
+    background-position: 0 4px
+}
+.dialog .main {
+    width: 100%;
+    height: 100%;
+    border-top: 1px solid rgba(255,255,255,0.2);
+}
+.dialog .main .leftbar {
+    top: 30px;
+    left: -5px;
+    bottom: 5px;
+    position: absolute;
+    cursor: e-resize;
+    width: 5px;
+}
+.dialog .main .content {
+    height: 100%;
+    background: white url(/static/images/desktop/ntp_background.png) repeat left bottom;
+    -webkit-overflow-scrolling: touch;
+    overflow: hidden;
+}
+.dialog .main .rightbar {
+    top: 30px;
+    right: -5px;
+    bottom: 5px;
+    position: absolute;
+    cursor: e-resize;
+    width: 5px;
+}
+.dialog .main .content .msgBox {
+    width: 100%;
+    height: 100%;
+    background: #fff;
+}
+.dialog .main .content .msgBox .msgIcon {
+    width: 100px;
+    height: 100px;
+    top: 0;
+    left: 0;
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
+    display: table-cell;
+}
+.dialog .main .content .msgBox .msgText {
+    height: 80px;
+    top: 0;
+    left: 0;
+    padding-right: 10px;
+    text-align: left;
+    vertical-align: middle;
+    position: relative;
+    display: table-cell;
+    line-height: 20px;
+    color: #000;
+    font-family: Arial,Tahoma,微软雅黑;
+    font-size: 15px;
+}
+.dialog .main .content .msgBox .operate {
+    text-align: center;
+    background: #f3f3f3;
+    height: 40px;
+    padding-top: 15px;
+    border-top: 1px solid #c0c0c0;
+}
+.dialog .inputButton {
+    border-radius: 2px;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    -webkit-user-select: none;
+    background: -webkit-linear-gradient(#fafafa,#f4f4f4 40%,#e5e5e5);
+    border: 1px solid #aaa;
+    color: #444;
+    margin-bottom: 0;
+    min-width: 4em;
+    padding: 3px 12px 3px 12px;
+    cursor: pointer;
+    font-family: Arial,Tahoma,微软雅黑;
+    font-size: 15px;
+}
+.dialog .barMove {
+    position: absolute;
+    top: 0;
+    left: 36px;
+    right: 100px;
+    cursor: move;
+    color: #5f5f5f;
+    padding: 3px;
+    height: 32px;
+}
+.dialog .main .content .msgBox .msgInput {
+    height: 65px;
+    top: 0;
+    left: 0;
+    padding: 15px 25px;
+    text-align: left;
+    vertical-align: middle;
+    position: relative;
+    display: table-cell;
+    line-height: 24px;
+    color: #000;
+    font-family: Arial,Tahoma,微软雅黑;
+    font-size: 11pt;
+}
+.dialog .main .content .msgBox .msgInput input {
+    width: 300px;
+    border: 1px solid #ccc;
+    font-size: 12pt;
+}
+.dialog .main .content .msgBox .msgPass {
+    height: 65px;
+    top: 0;
+    left: 0;
+    padding: 15px 25px;
+    text-align: left;
+    vertical-align: middle;
+    position: relative;
+    display: table-cell;
+    line-height: 40px;
+    color: #000;
+    font-family: Arial,Tahoma,微软雅黑;
+    font-size: 11pt;
+}
+
+
+
+/*  */
+.dialogPlugin {
+    position: absolute;
+    top: 110px;
+    left: 480px;
+    opacity: 1;
+    transition-property: all;
+    transition-duration: 0s;
+    transition-timing-function: ease;
+    background: #c0c0c0 url(/static/images/desktop/frame.png) repeat-x left top;
+    padding: 4px 0 33px 0;
+    -moz-box-shadow: 5px 5px 30px rgba(0,0,0,0.7);
+    -webkit-box-shadow: 5px 5px 30px rgba(0,0,0,0.7);
+    box-shadow: 5px 5px 30px rgba(0,0,0,0.7);
+    border: 1px solid rgba(255,255,255,0.2);
+    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=25,Direction=135,Color='#888');
+}
+.dialogPlugin .bar {
+    color: #5f5f5f;
+    padding: 0;
+    height: 32px;
+    cursor: pointer;
+}
+.dialogPlugin .bar img {
+    float: left;
+    width: 26px;
+    height: 26px;
+    padding: 1px;
+    margin-left: 6px;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+.dialogPlugin .bar .title {
+    float: left;
+    font-family: Arial,Tahoma,微软雅黑;
+    font-size: 14px;
+    margin-top: 4px;
+    margin-left: 4px;
+}
+.dialogPlugin .bar .close {
+    float: right;
+    cursor: pointer;
+    margin: 5px 5px 0 5px;
+    width: 24px;
+    height: 24px;
+    background: url(/static/images/desktop/dialog-bt.png) no-repeat;
+    background-position: 0 -166px;
+    font: 12px/1.5 tahoma,helvetica,clean,sans-serif;
+    color: #45649e;
+}
+.dialogPlugin .bar .close:hover {
+    background-position: 0 -142px
+}
+.dialogPlugin .bar .max {
+    float: right;
+    cursor: pointer;
+    margin: 3px 5px 0 5px;
+    width: 24px;
+    height: 24px;
+    background: url(/static/images/desktop/dialog-bt.png) no-repeat;
+    background-position: 0 -69px;
+}
+.dialogPlugin .bar .max:hover {
+    background-position: 0 -45px
+}
+.dialogPlugin .bar .min {
+    float: right;
+    cursor: pointer;
+    margin: 3px 5px 0 5px;
+    width: 24px;
+    height: 24px;
+    background: url(/static/images/desktop/dialog-bt.png) no-repeat;
+    background-position: 0 -20px;
+}
+.dialogPlugin .bar .min:hover {
+    background-position: 0 4px
+}
+.dialogPlugin .main {
+    width: 100%;
+    height: 100%;
+    border-top: 1px solid rgba(255,255,255,0.2);
+}
+.dialogPlugin .main .leftbar {
+    top: 30px;
+    left: -5px;
+    bottom: 5px;
+    position: absolute;
+    cursor: e-resize;
+    width: 5px;
+}
+.dialogPlugin .main .content {
+    height: 100%;
+    background: white url(/static/images/desktop/ntp_background.png) repeat left bottom;
+    -webkit-overflow-scrolling: touch;
+    overflow: hidden;
+}
+.dialogPlugin .main .rightbar {
+    top: 30px;
+    right: -5px;
+    bottom: 5px;
+    position: absolute;
+    cursor: e-resize;
+    width: 5px;
+}
+.dialogPlugin .main .winSize {
+    top: 30px;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+    position: absolute;
+    display: none;
+}
+.dialogPlugin-max .main .winSize {
+    display: none;
+}
+.dialogPlugin .main .winSize .sizeText {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin: -50px 0 0 -180px;
+    width: 360px;
+    height: 50px;
+    font-family: Arial,Tahoma,微软雅黑;
+    font-size: 42px;
+    color: #ccc;
+    text-align: center;
+}
+.dialogPlugin-max {
+    position: absolute;
+    background: #c0c0c0 url(/static/images/desktop/frame.png) repeat-x left top;
+    margin-top: 0;
+    padding: 0;
+    top: 0!important;
+    left: 0!important;
+    width: 100%!important;
+    height: 100%!important;
+}
+.dialogPlugin-max .bar {
+    color: #5f5f5f;
+    padding: 5px 0;
+    height: 32px;
+}
+.dialogPlugin-max .bar img {
+    float: left;
+    width: 24px;
+    height: 24px;
+    padding: 2px 0 2px 8px;
+}
+.dialogPlugin-max .bar .title {
+    float: left;
+    font-family: Arial,Tahoma,微软雅黑;
+    font-size: 14px;
+    margin-top: 4px;
+    margin-left: 4px;
+}
+.dialogPlugin-max .bar .close {
+    float: right;
+    cursor: pointer;
+    margin: 5px 5px 0 5px;
+    width: 24px;
+    height: 24px;
+    background: url(/static/images/desktop/dialog-bt.png) no-repeat;
+    background-position: 0 -166px;
+}
+.dialogPlugin-max .bar .max {
+    float: right;
+    cursor: pointer;
+    margin: 3px 5px 0 5px;
+    width: 24px;
+    height: 24px;
+    background: url(/static/images/desktop/dialog-bt.png) no-repeat;
+    background-position: 0 -117px;
+}
+.dialogPlugin-max .bar .min {
+    float: right;
+    cursor: pointer;
+    margin: 3px 5px 0 5px;
+    width: 24px;
+    height: 24px;
+    background: url(/static/images/desktop/dialog-bt.png) no-repeat;
+    background-position: 0 -20px;
+}
+.dialogPlugin-max .main {
+    top: 38px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+}
+.dialogPlugin-max .main .leftbar {
+    top: 0;
+    left: 0;
+    bottom: 0;
+    position: absolute;
+    cursor: e-resize;
+    width: 0;
+}
+.dialogPlugin-max .main .content {
+    margin-left: 0;
+    margin-right: 0;
+    height: 100%;
+    background: white url(/static/images/desktop/ntp_background.png) repeat left bottom;
+    -webkit-overflow-scrolling: touch;
+    overflow: hidden;
+}
+.dialogPlugin-max iframe {
+    height: 100%;
+    width: 100%;
+}
+.dialogPlugin-max .main .rightbar {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    cursor: e-resize;
+    width: 0;
+}
+.dialogPlugin-max .foot {
+    height: 0;
+}
+.dialogPlugin .barMove {
+    position: absolute;
+    top: 0;
+    left: 36px;
+    right: 100px;
+    cursor: move;
+    color: #5f5f5f;
+    padding: 3px;
+    height: 32px;
+}
+.DialogPlugin iframe{
+    width: 100%;
+    height: 100%;
+}

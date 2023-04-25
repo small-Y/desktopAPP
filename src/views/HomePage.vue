@@ -3,7 +3,7 @@
         <div class="startPage">
             <div id="startingCover">
               <div id="startingLogo">
-                  <img src="../assets/images/logo.png" width="120" height="120" border="0" alt />
+                  <img src="/static/images/logo.png" width="120" height="120" border="0" alt />
               </div>
               <div id="startingText">Starting ...</div>
               <div id="startingBar"></div>
@@ -134,7 +134,7 @@ function playSound(soundType) {
   overflow: hidden;
   font-size: 0;
   border: 1px solid #999;
-  background: black url("../assets/images/starting_bar.gif");
+  background: black url("/public/static/images/starting_bar.gif");
 }
 </style>
   

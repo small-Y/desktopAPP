@@ -58,6 +58,37 @@ input{
    	background: #1d324f no-repeat center center;
 }
 
+.dialogPlugin
+{
+	background: #1d324f no-repeat center center;
+    -moz-box-shadow: 5px 5px 30px rgba(16, 153, 236,0.5);
+    -webkit-box-shadow: 5px 5px 30px rgba(16, 153, 236,0.5);
+    box-shadow: 5px 5px 30px rgba(16, 153, 236,0.5);
+	border: 1px solid rgba(70, 81, 95, 0.2);    
+}
+
+.dialogPlugin .bar
+{
+    color:#fff;
+}
+
+
+.dialogPlugin-max
+{
+   background: #1d324f no-repeat center center;
+}
+
+.dialogPlugin-max .bar
+{
+    color:#fff;
+}
+
+.dialogPlugin-fullscreen
+{
+   	background: #1d324f no-repeat center center;
+}
+
+
 .desktop .about {
     color: #94B2D0;
     text-align: center;
@@ -103,6 +134,37 @@ input{
 }
 
 .dialog .main .content .msgBox .operate {
+    background: #182B43;
+    border-top: 1px solid #405775;
+}
+
+.dialogPlugin .main{
+	border-top: 1px solid rgba(70, 81, 95, 0.2);
+}
+
+.dialogPlugin-max .main{
+	border-top: 1px solid rgba(70, 81, 95, 0.2);
+}
+
+.dialogPlugin .main .content {
+    background:url(./i/frame.jpg) repeat center center;
+	background-size: cover;
+}
+
+.dialogPlugin-max .main .content {
+    background:url(./i/frame.jpg) repeat center center;
+	background-size: cover;
+}
+
+.dialogPlugin .main .content .msgBox {
+    background: #182b43;
+}
+
+.dialogPlugin .main .content .msgBox .msgText {
+    color: #94B2D0;
+}
+
+.dialogPlugin .main .content .msgBox .operate {
     background: #182B43;
     border-top: 1px solid #405775;
 }
@@ -173,6 +235,32 @@ input{
 }
 
 .dialog .main .content .msgBox .msgPass input:focus{
+	border-color: #1099EC;
+}
+
+.dialogPlugin .main .content .msgBox .msgInput {
+    color: #405775;
+}
+
+.dialogPlugin .main .content .msgBox .msgInput input {
+    border: 1px solid #405775;
+    background: transparent;
+}
+
+.dialogPlugin .main .content .msgBox .msgInput input:focus{
+	border-color: #1099EC;
+}
+
+.dialogPlugin .main .content .msgBox .msgPass{
+    color: #405775;
+}
+
+.dialogPlugin .main .content .msgBox .msgPass input {
+    border: 1px solid #405775;
+    background: transparent;
+}
+
+.dialogPlugin .main .content .msgBox .msgPass input:focus{
 	border-color: #1099EC;
 }
 

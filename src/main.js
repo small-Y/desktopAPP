@@ -5,8 +5,8 @@ import router from './router/index'
 createApp(App).use(router).mount('#app')
 
 // 全局引入Toast
-import '../public/Toaster/toaster.css';
-import toastr from '../public/Toaster/toastr.js';
+import '../public/static/Toaster/toaster.css';
+import toastr from '../public/static/Toaster/toastr.js';
 toastr.options = {
     "closeButton": true,//是否显示关闭按钮
     "debug": false,//是否使用debug模式
@@ -23,9 +23,9 @@ toastr.options = {
 }
 
 // 全局引入dataformat
-import "../public/static/dateformat.js"
+import "../public/static/js/dateformat.js"
 //时钟插件
-import "../public/static/jquery.thooClock.js"
+import "../public/static/js/jquery.thooClock.js"
 //cookie
 import 'vue-cookies'
 //

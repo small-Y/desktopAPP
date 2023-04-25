@@ -3,7 +3,7 @@
         <div id="loginContainer" class="desktopLogin"> 
             <div id="loginFrame" class="desktop">
                 <div id="loginWrapper" class="loginWrapper">
-                    <img :src="require('@/assets/images/'+tadayPic)" onerror="this.style.display='none'">
+                    <img :src="require('/public/static/images/'+tadayPic)" onerror="this.style.display='none'">
                 </div>
                 <div id="loginPannelFrame" class="loginPannelFrame">
                     <div id="loginFrame_Panel_Time" class="loginTime">{{ hour }}:{{ minutes }}</div>
@@ -220,7 +220,7 @@ export default {
     height: 100%;
     left: 0;
     top: 0;
-    background: transparent url(../assets/images/default.jpg) repeat center top;
+    background: transparent url(/public/static/images/default.jpg) repeat center top;
     z-index: -1;
 }
 .loginWrapper img{
@@ -267,7 +267,7 @@ export default {
     left: 50%;
     top: 50%;
     margin: -62px 0 0 -62px;
-    background: transparent url(../assets/images/waiting.gif) no-repeat center center;
+    background: transparent url(/public/static/images/waiting.gif) no-repeat center center;
     display: none
 }
 .loginForm {
@@ -279,7 +279,7 @@ export default {
     margin: -150px 0 0 -200px;
     color: #fff;
     overflow: hidden;
-    background: url("../assets/images/loginframe.png") no-repeat;
+    background: url("/public/static/images/loginframe.png") no-repeat;
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
     border-radius: 10px;
@@ -386,7 +386,7 @@ export default {
 }
 
 .handle {
-    background-image: url(../assets/images/lock-slider.png);
+    background-image: url(/public/static/images/lock-slider.png);
     cursor: pointer;
     width: 56px;
     height: 38px;
@@ -399,6 +399,6 @@ export default {
 }
 
 .handle:hover {
-    background-image: url(../assets/images/lock-slider2.png)
+    background-image: url(/public/static/images/lock-slider2.png)
 }
   </style>
