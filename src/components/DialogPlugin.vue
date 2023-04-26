@@ -10,12 +10,12 @@
                     <a class="min" @click="clickMin(index)"></a>
                 </div>
                 <div class="main">
-                    <div class="leftbar"></div>
+                    <div class="leftbar"  @mousedown="leftbarDown($event,index)" @mouseup="leftbarUp()"></div>
                     <div class="winSize"><div class="sizeText">^_^&nbsp;窗体调整中...</div></div>
                     <div class="content">
                         <iframe :src="item.appUrl+'/index.html'" frameborder="0" marginwidth="0" marginheight="0"></iframe>
                     </div>
-                    <div class="rightbar"></div>
+                    <div class="rightbar" @mousedown="rightbarDown($event,index)" @mouseup="rightbarUp()"></div>
                 </div>
                 <div class="foot"></div>
                 <div class="mask"></div>

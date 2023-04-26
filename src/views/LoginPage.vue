@@ -38,7 +38,7 @@ import {Login} from '../API/api.js'
 import VueCookies from 'vue-cookies'
 import { getLunar } from 'chinese-lunar-calendar'
 import $ from "jquery";
-import toastr from "../../public/Toaster/toastr.js";
+import toastr from "/public/static/Toaster/toastr.js";
 import {encrypt} from '@/common/crypto'
 
 export default {

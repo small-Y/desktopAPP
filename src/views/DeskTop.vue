@@ -163,12 +163,17 @@
      @click-Cancel="clickCancel" 
      @click-close="clickCloseDialog"/>
     <DialogPagePlugin 
-    :title="dialogPluginTitle" 
     :width="dialogPluginWidth" 
     :height="dialogPluginHeight" 
     :showDialogPlugin="showDialogPlugin"
     :listApp="listApp"
     @click-close="clickCloseDialogPlugin"/>
+    <DialogWidget 
+    :widgetWidth="dialogWidgetWidth" 
+    :widgetHeight="dialogWidgetHeight" 
+    :showDialogWidget="showDialogWidget"
+    :widgetApp="widgetApp"
+    @click-WidgetClose="clickWidgetClose"/>
   </div>
 </template>
 
@@ -176,11 +181,12 @@
     import { ref , onMounted} from 'vue'
     import { getLunar } from 'chinese-lunar-calendar'
     import $ from "jquery";
-    import toastr from "../../public/Toaster/toastr.js";
+    import toastr from "/public/static/Toaster/toastr.js";
     import {getCityList,postLoginOut,readConfig} from '../API/api.js'
     import VueCookies from 'vue-cookies'
     import DialogPage from "@/components/DialogPage.vue";
     import DialogPagePlugin from "@/components/DialogPlugin.vue";
+    import DialogWidget from "@/components/DialogWidget.vue";
     import PannelTask from "@/components/PannelTask.vue";
     import StartApp from "@/components/StartApp.vue";
     import AppList from "@/components/AppList.vue";
@@ -194,16 +200,20 @@
     const height=ref();
     const showDialog=ref(false);
 
-    const dialogPluginTitle=ref();
     const dialogPluginWidth=ref();
     const dialogPluginHeight=ref();
     const showDialogPlugin=ref(false);
+
+    const dialogWidgetWidth=ref();
+    const dialogWidgetHeight=ref();
+    const showDialogWidget=ref(false);
 
     const installApp=ref();
     const userApp=ref();
     const installWidget=ref();
 
     const listApp=ref([]);
+    const widgetApp=ref([]);
     const showPannelTask=ref(false)
 
     const Time1=ref();
@@ -354,6 +364,8 @@
         var AMorPM = hour<12?'上午':'下午';
         var cHour = hour>12?(hour-12):hour;
         var cMin = min<10?'0'+min:min;
+        year.value = now.getFullYear();
+        ymd.value = now.Format("yyyy-MM-dd");
         month.value = now.getMonth() + 1;
         day.value = now.getDate();
         CWeek.value = now.getSysWeek();
@@ -361,9 +373,6 @@
         Time2.value=month.value+'月'+day.value+'日'+'  ';
     }
     function initClockList(){
-        var now = new Date();
-        year.value = now.getFullYear();
-        ymd.value = now.Format("yyyy-MM-dd");
         // 获取农历
         var getLunarDay = getLunar(year.value, month.value, day.value)
         // console.log(getLunarDay)
@@ -597,15 +606,14 @@
         console.log('index'+index)
         showDialogPlugin.value=true;
         playSound("rest");
-        var top = parseInt($("#dialog-"+index).css('top').split('px')[0]);
+        var top = parseInt($("#dialogPlugin-"+index).css('top').split('px')[0]);
         var maxZindex = getDialogZindexMax();
-        console.log(maxZindex);
         maxZindex++;
         if(top<-600){
-            $("#dialog-"+index).removeClass();
-            $("#dialog-"+index).addClass("dialog");
-            $("#dialog-"+index).css("z-index", maxZindex);
-            $("#dialog-"+index).animate({
+            $("#dialogPlugin-"+index).removeClass();
+            $("#dialogPlugin-"+index).addClass("dialog");
+            $("#dialogPlugin-"+index).css("z-index", maxZindex);
+            $("#dialogPlugin-"+index).animate({
                 top: listApp.value[index].top,
                 left: listApp.value[index].left,
                 width: listApp.value[index].width,
@@ -614,10 +622,10 @@
                 useTranslate3d: true,
                 opacity: 1
             }, "normal", function() {
-                $("#dialog-"+index).find(".content iframe").fadeIn("fast")
+                $("#dialogPlugin-"+index).find(".content iframe").fadeIn("fast")
             });
         }else{
-            $("#dialog-"+index).css("z-index", maxZindex);
+            $("#dialogPlugin-"+index).css("z-index", maxZindex);
         }
         setDialogPlugin(index);
         
@@ -652,6 +660,20 @@
         }
         var max = Math.max(...myList)
         return max
+    }
+
+    // widget操作
+    function clickWidgetClose (appID) {
+        console.log('点击关闭')
+        playSound('close')
+        var aList=widgetApp.value;
+        for (let i = 0; i < aList.length; i++) {
+            const element = aList[i];
+            if(element.appID==appID){
+                aList.splice(i,1);
+            }
+        }
+        widgetApp.value=aList;
     }
 
     // 点击打开系统app
@@ -692,15 +714,13 @@
         $(".ApplyButton").removeClass("active");
         $(".ThemeButton").removeClass("active");
         playSound("rest");
-        showAppMenu.value=false
-        showPannelTask.value=true;
-        showDialogPlugin.value=true;
-        var aList=listApp.value;
+        showAppMenu.value=false;
+        showDialogWidget.value=true;
+        var aList=widgetApp.value;
         aList.push(installWidget.value[index]);
         aList=arreryFiter(aList);
         aList[aList.length-1].active=true;
-        listApp.value=aList;
-        setDialogPlugin(index);
+        widgetApp.value=aList;
     }
 
 
