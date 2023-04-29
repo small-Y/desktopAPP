@@ -33,23 +33,28 @@
             return {
                 beginLeft:0,
                 beginTop:0,
+                beginbarLeft:0,
+                beginbarRight:0,
                 ifMax:false,
                 ifMin:false,
-                Dtop:0,
-                Dleft:0,
-                Dwidth:0,
-                Dheight:0,
                 DzIndex:0,
                 zindex:500,
-                index:0
+                index:0,
+                location:{}
             }
         },
         props:['showDialogPlugin','listApp'],
+        watch: {
+            listApp: function (newListApp) {
+                for (let i = 0; i < newListApp.length; i++) {
+                    this.location[i]={'ifMax':false}
+                }
+            }
+        },
         methods: {
             barMoveDown:function(event,index){
                 this.index=index;
                 var maxZindex = this.getDialogZindexMax();
-                console.log(maxZindex);
                 maxZindex++;
                 $("#dialogPlugin-"+this.index).css({
                     'z-index':maxZindex
@@ -82,32 +87,40 @@
                     top:top,
                     left:left
                 })
+                this.beginTop = event.clientY - parseInt($("#dialogPlugin-"+this.index).css("top"));
+                this.beginLeft = event.clientX - parseInt($("#dialogPlugin-"+this.index).css("left"));
             },
             clickMax:function(index){
-                if(this.ifMax){
+                if(this.location[index].ifMax){
                     this.ifMax=false;
                     this.playSound("rest");
                     $("#dialogPlugin-"+index).removeClass();
                     $("#dialogPlugin-"+index).addClass("dialogPlugin");
                     $("#dialogPlugin-"+index).css("z-index", this.DzIndex);
+                    var thisLocation =  this.location[index];
                     $("#dialogPlugin-"+index).animate({
-                        top: this.Dtop,
-                        left: this.Dleft,
-                        width: this.Dwidth,
-                        height: this.Dheight,
+                        top:thisLocation.Dtop,
+                        left: thisLocation.Dleft,
+                        width: thisLocation.Dwidth,
+                        height:thisLocation.Dheight,
                         avoidTransforms: false,
                         useTranslate3d: true
                     }, "normal", function() {
                         $("#dialogPlugin-"+index).find(".content iframe").fadeIn("fast")
                     });
+                    this.location[index].ifMax = false;
                 }else{
                     this.ifMax=true;
                     this.playSound("max");
-                    this.Dtop = parseInt($("#dialogPlugin-"+index).css("top"));
-                    this.Dleft = parseInt($("#dialogPlugin-"+index).css("left"));
-                    this.Dwidth = parseInt($("#dialogPlugin-"+index).css("width"));
-                    this.Dheight = parseInt($("#dialogPlugin-"+index).css("height"));
-                    this.DzIndex = parseInt($("#dialogPlugin-"+index).css("z-index"));
+                    var pluginLocation = {
+                        'Dtop' : parseInt($("#dialogPlugin-"+index).css("top")),
+                        'Dleft' : parseInt($("#dialogPlugin-"+index).css("left")),
+                        'Dwidth' : parseInt($("#dialogPlugin-"+index).css("width")),
+                        'Dheight' : parseInt($("#dialogPlugin-"+index).css("height")),
+                        'ifMax' : true
+                    }
+                    this.location[index]=pluginLocation;
+                    this.DzIndex = this.getDialogZindexMax();
                     $("#dialogPlugin-"+index).find(".content iframe").hide(),
                     $("#dialogPlugin-"+index).css("z-index", 1000000),
                     $("#dialogPlugin-"+index).animate({
@@ -140,13 +153,12 @@
                     $("#dialogPlugin-"+index).removeClass();
                     $("#dialogPlugin-"+index).addClass("dialogPlugin");
                     $("#dialogPlugin-"+index).css("z-index", -1);
-                })
+                });
+                this.location[index].ifMax = false;
             },
             setDialogPlugin:function (index) {
-                console.log('index'+index)
                 var list = this.listApp;
                 for (let i = 0; i < list.length; i++) {
-                    console.log(i)
                     if(index==i){
                         this.setTaskActive(list[i].appID)
                     }else{
@@ -155,12 +167,10 @@
                 }
             },
             setTaskActive:function (appID) {
-                console.log('active: '+appID)
                 $("#desktopFrame1_Panel_Task_" + appID + "_Button").removeClass();
                 $("#desktopFrame1_Panel_Task_" + appID + "_Button").addClass("ButtonItemActive")
             },
             setTaskNormal:function (appID) {
-                console.log('normal: '+appID)
                 $("#desktopFrame1_Panel_Task_" + appID + "_Button").removeClass();
                 $("#desktopFrame1_Panel_Task_" + appID + "_Button").addClass("ButtonItem")
             },
@@ -172,6 +182,75 @@
                 }
                 var max = Math.max(...myList)
                 return max
+            },
+            leftbarDown:function (event,index) {
+                this.index=index;
+                var maxZindex = this.getDialogZindexMax();
+                maxZindex++;
+                $("#dialogPlugin-"+this.index).css({
+                    'z-index':maxZindex
+                });
+                $("#dialogPlugin-"+this.index).find(".winSize").css({
+                    'display':'block'
+                })
+                $("#dialogPlugin-"+this.index).find(".content").find('iframe').css({
+                    'display':'none'
+                })
+                this.beginbarLeft = event.clientX + parseInt($("#dialogPlugin-"+this.index).css("width"));
+                $(document).bind("mousemove", this.leftbarGo);
+
+                this.setDialogPlugin(index);
+            },
+            leftbarUp:function(){
+                $("#dialogPlugin-"+this.index).find(".winSize").css({
+                    'display':'none'
+                })
+                $("#dialogPlugin-"+this.index).find(".content").find('iframe').css({
+                    'display':'block'
+                })
+            },
+            leftbarGo:function(event){
+                var width = (this.beginbarLeft - event.clientX);
+                var left = event.clientX ;
+                $("#dialogPlugin-"+this.index).css({
+                    width:width,
+                    left:left
+                })
+                this.beginbarLeft = event.clientX + parseInt($("#dialogPlugin-"+this.index).css("width"));
+            },
+            rightbarDown:function (event,index) {
+                this.index=index;
+                var maxZindex = this.getDialogZindexMax();
+                maxZindex++;
+                $("#dialogPlugin-"+this.index).css({
+                    'z-index':maxZindex
+                });
+                $("#dialogPlugin-"+this.index).find(".winSize").css({
+                    'display':'block'
+                })
+                $("#dialogPlugin-"+this.index).find(".content").find('iframe').css({
+                    'display':'none'
+                })
+
+                this.beginbarRight = parseInt($("#dialogPlugin-"+this.index).css("width")) - event.clientX;
+                $(document).bind("mousemove", this.rightbarGo);
+
+                this.setDialogPlugin(index);
+            },
+            rightbarUp:function(){
+                $("#dialogPlugin-"+this.index).find(".winSize").css({
+                    'display':'none'
+                })
+                $("#dialogPlugin-"+this.index).find(".content").find('iframe').css({
+                    'display':'block'
+                })
+            },
+            rightbarGo:function(event){
+                var width =   (this.beginbarRight + event.clientX);
+                $("#dialogPlugin-"+this.index).css({
+                    width:width
+                })
+                this.beginbarRight = parseInt($("#dialogPlugin-"+this.index).css("width")) - event.clientX;
             },
             playSound:function(soundType){
                 var soundTag = document.getElementById(soundType+"_sound");

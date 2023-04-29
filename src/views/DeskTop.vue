@@ -375,7 +375,6 @@
     function initClockList(){
         // 获取农历
         var getLunarDay = getLunar(year.value, month.value, day.value)
-        // console.log(getLunarDay)
         lunar.value = '农历'+getLunarDay.dateStr;
         lunarYear.value = getLunarDay.lunarYear;
         zodiac.value = getLunarDay.zodiac+'年';
@@ -398,7 +397,6 @@
             // 192.168.1.109
             // 获取IP
             var ip = window.location.host.split(":")[0];
-            // console.log("ip：",ip)
             if(ip.split('.')[0]=='172'||ip.split('.')[0]=='192'){
                 ip='myip';
             }
@@ -498,22 +496,17 @@
         playSound('rest')
     }
     function clickCancel(){
-        console.log('点击取消')
         showDialog.value=false;
         playSound('close')
     }
     function clickCloseDialog(){
-        console.log('点击关闭')
         showDialog.value=false;
         playSound('close')
         showPannelTask.value=false;
     }
     function clickLiginOutOk(){
-        console.log('点击确定')
         showDialog.value=false;
-
         var userData = VueCookies.get('TUser');
-        console.log(userData)
         var username = userData.username;
         postLoginOut('api/LoginOut',{username:username}).then(res=>{
             console.log(res);
@@ -522,7 +515,6 @@
             location.href = "/"
             VueCookies.remove('TUser')
         },err=>{
-            console.log(err);
             toastr.warning('服务器错误！'+err.message)
         });
     }
@@ -585,7 +577,6 @@
         listApp.value=aList;
     }
     function clickCloseDialogPlugin(index){
-        console.log('点击关闭')
         playSound('close')
         var aList=listApp.value;
         if(aList.length==0){
@@ -603,7 +594,6 @@
         
     }
     function clickPannelTask(index){
-        console.log('index'+index)
         showDialogPlugin.value=true;
         playSound("rest");
         var top = parseInt($("#dialogPlugin-"+index).css('top').split('px')[0]);
@@ -611,7 +601,7 @@
         maxZindex++;
         if(top<-600){
             $("#dialogPlugin-"+index).removeClass();
-            $("#dialogPlugin-"+index).addClass("dialog");
+            $("#dialogPlugin-"+index).addClass("dialogPlugin");
             $("#dialogPlugin-"+index).css("z-index", maxZindex);
             $("#dialogPlugin-"+index).animate({
                 top: listApp.value[index].top,
@@ -631,10 +621,8 @@
         
     }
     function setDialogPlugin (index) {
-        console.log('index'+index)
         var list = listApp.value;
         for (let i = 0; i < list.length; i++) {
-            console.log(i)
             if(index==i){
                 setTaskActive(listApp.value[i].appID)
             }else{
@@ -643,19 +631,17 @@
         }
     }
     function setTaskActive (appID) {
-        console.log('active: '+appID)
         $("#desktopFrame1_Panel_Task_" + appID + "_Button").removeClass();
         $("#desktopFrame1_Panel_Task_" + appID + "_Button").addClass("ButtonItemActive")
     }
     function setTaskNormal (appID) {
-        console.log('normal: '+appID)
         $("#desktopFrame1_Panel_Task_" + appID + "_Button").removeClass();
         $("#desktopFrame1_Panel_Task_" + appID + "_Button").addClass("ButtonItem")
     }
     function getDialogZindexMax () {
         var myList = [];
         for (let i = 0; i < 20; i++) {
-            var myZindex = $("#dialog-"+i).css('z-index');
+            var myZindex = $("#dialogPlugin-"+i).css('z-index');
             myList.push(myZindex?parseInt(myZindex):0);
         }
         var max = Math.max(...myList)
@@ -664,7 +650,6 @@
 
     // widget操作
     function clickWidgetClose (appID) {
-        console.log('点击关闭')
         playSound('close')
         var aList=widgetApp.value;
         for (let i = 0; i < aList.length; i++) {
@@ -736,20 +721,16 @@
 
     function init(){
         var userData = VueCookies.get('TUser');
-        // console.log(userData)
         var userID = userData.userID;
         readConfig('api/readConfig',{userID:userID}).then(res=>{
-            // console.log(res.data);
             installApp.value = res.data.installApp;
             userApp.value = res.data.userApp;
             installWidget.value = res.data.installWidget;
             if(res.data.system.myTheme){
-                // console.log('添加主题！')
                 document.getElementById("mytheme").href ="/Theme/"+ res.data.system.myTheme + "/theme.css"
             }
 
         },err=>{
-            console.log(err);
             toastr.warning('服务器错误！'+err.message)
         });
     }

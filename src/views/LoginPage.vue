@@ -159,7 +159,7 @@ export default {
             Login('api/Login',{name:name,pass:pass}).then(res=>{
                 
                 console.log(res);
-                if(res.status==200){
+                if(res.status==200&&res.data!={}){
                     var data = res.data;
                     console.log('已登录，进入桌面！')
                     VueCookies.set('TUser',data)
