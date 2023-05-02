@@ -1,0 +1,53 @@
+@charset "utf-8";
+
+.dialog
+{
+	background: #cc9966 url(./i/frame.png) repeat-x left top;
+}
+
+.dialog .bar
+{
+    color:#ffffff;
+}
+
+.dialog-max
+{
+   background: #cc9966 url(./i/frame.png) repeat-x left top;
+}
+
+.dialog-max .bar
+{
+    color:#ffffff;
+}
+
+.dialog-fullscreen
+{
+   background: #cc9966 url(./i/frame.png) repeat-x left top;
+}
+
+
+
+.dialogPlugin
+{
+	background: #cc9966 url(./i/frame.png) repeat-x left top;
+}
+
+.dialogPlugin .bar
+{
+    color:#ffffff;
+}
+
+.dialogPlugin-max
+{
+   background: #cc9966 url(./i/frame.png) repeat-x left top;
+}
+
+.dialogPlugin-max .bar
+{
+    color:#ffffff;
+}
+
+.dialogPlugin-fullscreen
+{
+   background: #cc9966 url(./i/frame.png) repeat-x left top;
+}

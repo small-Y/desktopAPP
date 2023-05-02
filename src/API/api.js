@@ -19,13 +19,29 @@ export function postLoginOut(url,params){
 export function readConfig(url,params){
     return axios.post(url,params);
 }
+export function postUserSign(url,params){
+    return axios.post(url,params);
+}
+export function getThemeList(url,params){
+    return axios.post(url,params);
+}
+export function postSetTheme(url,params){
+    return axios.post(url,params);
+}
+export function postSetWrapper(url,params){
+    return axios.post(url,params);
+}
 
 export default {
     getCityList,
     getLogin,
     postLoginOut,
     Login,
-    readConfig
+    readConfig,
+    postUserSign,
+    getThemeList,
+    postSetTheme,
+    postSetWrapper
 }
 
 

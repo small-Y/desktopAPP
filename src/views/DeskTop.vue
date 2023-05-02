@@ -1,7 +1,7 @@
 <template>
   <div id="desktopcontiner" class="desktop">
     <div class="desktopWrapper">
-      <img src="/static/images/wrapper.jpg"  style="" onerror="this.style.display='none'">
+      <img :src="wrapperImg" alt="壁纸" v-if="wrapperImgType">
     </div>
     <div id="desktopFrame1_Panel" class="desktopPanel">
       <div id="desktopFrame1_Panel_Task" class="taskbar">
@@ -48,10 +48,10 @@
                   <div class="tab1" @click="showThemeListTab1=true" :class="showThemeListTab1?'active':''"></div>
                   <div class="tab2" @click="showThemeListTab1=false" :class="showThemeListTab1?'':'active'"></div>
                   <div class="tab1content" v-if="showThemeListTab1">
-                
+                    <ThemeList :TList="TList" @click-SetTheme="clickSetTheme"/>
                   </div>
                   <div class="tab2content" v-else>
-
+                    <WrapperList :WList="WList" @click-SetWrapper="clickSetWrapper" @click-SetWrapper1="clickSetWrapper1" @click-SetWrapper2="clickSetWrapper2"/>
                   </div>
                 </div>
                 <div class="ThemeSearch">					
@@ -159,7 +159,7 @@
     :height="height" 
     :showDialog="showDialog" 
     :menuType="menuType"
-    @click-Ok="clickLiginOutOk"
+    @click-Ok="clickDialogOk"
      @click-Cancel="clickCancel" 
      @click-close="clickCloseDialog"/>
     <DialogPagePlugin 
@@ -182,7 +182,7 @@
     import { getLunar } from 'chinese-lunar-calendar'
     import $ from "jquery";
     import toastr from "/public/static/Toaster/toastr.js";
-    import {getCityList,postLoginOut,readConfig} from '../API/api.js'
+    import {getLogin,getCityList,postLoginOut,readConfig,postUserSign,getThemeList,postSetTheme,postSetWrapper} from '../API/api.js'
     import VueCookies from 'vue-cookies'
     import DialogPage from "@/components/DialogPage.vue";
     import DialogPagePlugin from "@/components/DialogPlugin.vue";
@@ -191,8 +191,13 @@
     import StartApp from "@/components/StartApp.vue";
     import AppList from "@/components/AppList.vue";
     import WidgetList from "@/components/WidgetList.vue";
-    import { useRouter } from 'vue-router'
-    const router = useRouter()
+    import ThemeList from "@/components/ThemeList.vue";
+    import WrapperList from "@/components/WrapperList.vue";
+    // import { useRouter } from 'vue-router'
+    // const router = useRouter()
+
+    const wrapperImg=ref();
+    const wrapperImgType=ref(true);
 
     const menuType=ref();
     const dialogTitle=ref();
@@ -215,6 +220,9 @@
     const listApp=ref([]);
     const widgetApp=ref([]);
     const showPannelTask=ref(false)
+
+    const TList=ref();
+    const WList=ref()
 
     const Time1=ref();
     const Time2=ref();
@@ -429,7 +437,7 @@
             }
             initWeather(cityTag);
         },err=>{
-            console.log(err);
+            toastr.warning('服务器错误！'+err.response.statusText);
         
         });
     }
@@ -504,19 +512,35 @@
         playSound('close')
         showPannelTask.value=false;
     }
-    function clickLiginOutOk(){
+    function clickDialogOk(){
         showDialog.value=false;
         var userData = VueCookies.get('TUser');
         var username = userData.username;
-        postLoginOut('api/LoginOut',{username:username}).then(res=>{
-            console.log(res);
-            console.log('注销登录！')
-            router.push({name: 'HomePage'});
-            location.href = "/"
-            VueCookies.remove('TUser')
-        },err=>{
-            toastr.warning('服务器错误！'+err.message)
-        });
+        
+        if(menuType.value=='userSign'){
+            var userSign = $('#msgInput').val();
+            console.log(userSign)
+            postUserSign('api/postUserSign',{username:username,userSign:userSign}).then(res=>{
+                console.log(res);
+                if(res.status==200){
+                    toastr.success('用户签名修改成功！')
+                    var data = res.data;
+                    VueCookies.set('TUser',data)
+                }
+            },err=>{
+                toastr.warning('服务器错误！'+err.response.statusText);
+            });
+        }else if(menuType.value=='loginOut'){
+            postLoginOut('api/LoginOut',{username:username}).then(res=>{
+                console.log(res);
+                console.log('注销登录！')
+                location.href = "/"
+                VueCookies.remove('TUser')
+            },err=>{
+                toastr.warning('服务器错误！'+err.response.statusText);
+            });
+        }
+        
     }
 
     // 修改用户签名
@@ -661,6 +685,57 @@
         widgetApp.value=aList;
     }
 
+
+    // 主题操作
+    function clickSetTheme(themeName){
+        var userData = VueCookies.get('TUser');
+        var userID = userData.userID;
+        postSetTheme('api/setTheme',{userID:userID,themeName:themeName}).then(res=>{
+            console.log(res);
+            if(res.data.flag){
+                playSound('info')
+                showThemeMenu.value=false;
+                wrapperImg.value = "/Theme/"+themeName+"/i/wrapper.jpg";
+                document.getElementById("mytheme").href ="/Theme/"+ themeName + "/theme.css";
+                toastr.success('主题修改成功！')
+            }
+        },err=>{
+            toastr.warning('服务器错误！'+err.response.statusText);
+        });
+    }
+    function clickSetWrapper(fileName){
+        wrapperImgType.value=true;
+        var userData = VueCookies.get('TUser');
+        var userID = userData.userID;
+        setWrapper(userID,fileName);
+    }
+    function clickSetWrapper1(fileName){
+        wrapperImgType.value=false;
+        var userData = VueCookies.get('TUser');
+        var userID = userData.userID;
+        setWrapper(userID,fileName);
+        var fileUrl = "/static/images/wrapper/"+fileName;
+        $("#desktopcontiner").find(".desktopWrapper").css("background", "transparent url(" + fileUrl + ") repeat center top")
+    }
+    function clickSetWrapper2(fileName){
+        wrapperImgType.value=true;
+        var userData = VueCookies.get('TUser');
+        var userID = userData.userID;
+        setWrapper(userID,fileName);
+    }
+    function setWrapper(userID,fileName){
+        postSetWrapper('api/setWrapper',{userID:userID,fileName:fileName,wrapperImgType:wrapperImgType.value}).then(res=>{
+            if(res.data.flag){
+                playSound('info')
+                showThemeMenu.value=false;
+                wrapperImg.value = "/static/images/wrapper/"+fileName;
+                toastr.success('壁纸修改成功！')
+            }
+        },err=>{
+            toastr.warning('服务器错误！'+err.response.statusText);
+        });
+    }
+
     // 点击打开系统app
     function clickStartApp(index){
         $(".HomeButton").removeClass("active");
@@ -719,19 +794,62 @@
         return newArr;
     }
 
+    // 
+    function oneTimeLogin() {
+        var userData = VueCookies.get('TUser');
+        var username = '';
+        if(userData) {
+            username = userData.username;
+        }else{
+            location.href = "/"
+        }
+        getLogin('api/getLogin',{username:username}).then(res=>{
+            if(res.status==200){
+                var data = res.data;
+                if(!data.loginStatus){
+                    location.href = "/"
+                }else{
+                    initClock();
+                    $("#desktopFrame1_Panel_Task_Status").find(".Clock").html(Time1.value+'<br>'+Time2.value+CWeek.value)
+                }
+            }
+        },err=>{
+            toastr.warning('服务器错误！'+err.response.statusText);
+            $("#desktopFrame1_Panel_Task_Status").find(".Clock").html('<font color="#ffff00">网络脱机</br>正在重新连接...</font>')
+        });
+    }
+
     function init(){
+        var timer;
+        clearInterval(timer==''?timer:'');
+        timer = setInterval(() => {
+            // console.log('实时登录验证')
+            oneTimeLogin();
+        }, 2000);
+        // 
         var userData = VueCookies.get('TUser');
         var userID = userData.userID;
         readConfig('api/readConfig',{userID:userID}).then(res=>{
+            wrapperImgType.value = res.data.wrapperImgType;
+            wrapperImg.value = res.data.wrapperImg;
             installApp.value = res.data.installApp;
             userApp.value = res.data.userApp;
             installWidget.value = res.data.installWidget;
-            if(res.data.system.myTheme){
+            if(res.data.system.myTheme!='default'){
                 document.getElementById("mytheme").href ="/Theme/"+ res.data.system.myTheme + "/theme.css"
+            }
+            if(!res.data.wrapperImgType){
+                $("#desktopcontiner").find(".desktopWrapper").css("background", "transparent url(" + res.data.wrapperImg + ") repeat center top")
             }
 
         },err=>{
-            toastr.warning('服务器错误！'+err.message)
+            toastr.warning('服务器错误！'+err.response.statusText);
+        });
+        getThemeList('api/getThemeList').then(res=>{
+            TList.value = res.data.themeList;
+            WList.value = res.data.wrapperList;
+        },err=>{
+            toastr.warning('服务器错误！'+err.response.statusText);
         });
     }
 

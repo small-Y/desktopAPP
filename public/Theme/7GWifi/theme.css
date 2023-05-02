@@ -479,7 +479,7 @@ input{
 
 .taskbar .TaskStatus .WeatherList {
 	color: #94B2D0;
-    background: #1D324F;
+    /* background: #1D324F; */
     border: 1px solid #1D324F;
     -moz-box-shadow: 5px 5px 30px rgba(24,43,67,0.5);
     -webkit-box-shadow: 5px 5px 30px rgba(24,43,67,0.5);

@@ -17,7 +17,7 @@
                             <div class="msgText">   您确定要注销ThingsOS桌面吗？</div>
                         </div>
                         <div  v-else-if="menuType=='userSign'">
-                            <div class="msgInput">请输入您的信息：<br><input type="text" id="msgInput"></div>
+                            <div class="msgInput">请输入您的信息：<br><input v-model="userSign" type="text" id="msgInput"></div>
                         </div>
                         <div v-else-if="menuType=='userPic'">
                             <div class="msgInput">
@@ -53,6 +53,7 @@
 
 <script>
 import $ from "jquery";
+import VueCookies from 'vue-cookies'
 export default {
     name: 'DialogPage',
     data() {
@@ -61,6 +62,7 @@ export default {
             moveTop:366,
             beginLeft:0,
             beginTop:0,
+            userSign:''
         }
     },
     props:['title','width','height','showDialog','menuType'],
@@ -81,6 +83,13 @@ export default {
             this.moveTop = (event.clientY - this.beginTop);
             this.moveLeft = (event.clientX - this.beginLeft);
         },
+        init:function(){
+            var userData = VueCookies.get('TUser');
+            this.userSign = userData.userSign;
+        }
+    },
+    mounted() {
+        this.init()
     }
 }
 </script>

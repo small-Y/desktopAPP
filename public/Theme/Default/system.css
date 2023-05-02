@@ -1,3 +1,23 @@
+
+
+::-webkit-scrollbar {
+    -webkit-appearance: none;
+    background-color: #F0F0F0;
+    width: 6px
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 6px;
+    background-clip: content-box;
+    background-color: #BFBFBF
+}
+
+::-webkit-scrollbar-corner {
+    background-color: #E6E6E6
+}
+
+
+
 .desktop {
     position: absolute;
     width: 100%;
@@ -20,9 +40,9 @@
     z-index: -1;
 }
 .desktopWrapper img{
-  width:"100%" ;
-  height:"100%";
-  position:absolute;
+  width: 100%;
+  height: 100%;
+  position: absolute;
   top:0;
   left:0;
   z-index:-1
@@ -290,6 +310,53 @@
     overflow: auto;
     overflow-x: hidden;
 }
+.taskbar .SystemButton .AppMenu .AppList .item {
+    position: relative;
+    width: 85px;
+    height: 80px;
+    padding: 5px 2px 0 2px;
+    line-height: 16px;
+    color: #666;
+    font-size: 14px;
+    text-align: center;
+    display: inline-block;
+    cursor: pointer
+}
+
+.taskbar .SystemButton .AppMenu .AppList .item.select {
+    display: none
+}
+
+.taskbar .SystemButton .AppMenu .AppList .user.select {
+    display: inline-block
+}
+
+.taskbar .SystemButton .AppMenu .AppList .item:hover {
+    background: rgba(0,0,0,.1)
+}
+
+.taskbar .SystemButton .AppMenu .AppList .item:hover span {
+    color: #000
+}
+
+.taskbar .SystemButton .AppMenu .AppList .item img {
+    width: 54px;
+    height: 54px
+}
+
+.taskbar .SystemButton .AppMenu .AppList .item .uninstall {
+    position: absolute;
+    top: 4px;
+    right: 8px;
+    height: 24px;
+    width: 24px;
+    background: url(./../style/images/remove.png) no-repeat center center;
+    display: none
+}
+
+.taskbar .SystemButton .AppMenu .AppList .item.select .uninstall {
+    display: block
+}
 .taskbar .SystemButton .AppMenu .AppSearch {
     position: absolute;
     left: 0;
@@ -426,6 +493,69 @@
     padding: 10px 0 5px 10px;
     overflow: auto;
     overflow-x: hidden;
+}
+.taskbar .SystemButton .ThemeMenu .ThemeList .item {
+    position: relative;
+    width: 180px;
+    height: auto;
+    padding: 5px;
+    margin-left: 5px;
+    line-height: 16px;
+    color: #666;
+    font-size: 14px;
+    text-align: center;
+    display: inline-block;
+    cursor: pointer;
+    min-height: 135px;
+}
+.taskbar .SystemButton .ThemeMenu .ThemeList .item.select {
+    display: none
+}
+
+.taskbar .SystemButton .ThemeMenu .ThemeList .user.select {
+    display: inline-block
+}
+
+.taskbar .SystemButton .ThemeMenu .ThemeList .item:hover {
+    background: rgba(0,0,0,.1)
+}
+
+.taskbar .SystemButton .ThemeMenu .ThemeList .item:hover span {
+    color: #000
+}
+.taskbar .SystemButton .ThemeMenu .ThemeList .item img {
+    width: 180px;
+    height: 120px;
+}
+.taskbar .SystemButton .ThemeMenu .ThemeList .item .uninstall {
+    position: absolute;
+    top: 42px;
+    left: 70px;
+    height: 48px;
+    width: 48px;
+    background: url(/static/images/delete.png) no-repeat center center;
+    display: none;
+}
+.taskbar .SystemButton .ThemeMenu .ThemeList .item .wbtn1 {
+    cursor: pointer;
+    float: left
+}
+
+.taskbar .SystemButton .ThemeMenu .ThemeList .item .wbtn1:hover {
+    color: #FF5722
+}
+
+.taskbar .SystemButton .ThemeMenu .ThemeList .item .wbtn2 {
+    cursor: pointer;
+    float: right
+}
+
+.taskbar .SystemButton .ThemeMenu .ThemeList .item .wbtn2:hover {
+    color: #FF5722
+}
+
+.taskbar .SystemButton .ThemeMenu .ThemeList .item.select .uninstall {
+    display: block
 }
 .taskbar .SystemButton .ThemeMenu .ThemeSearch {
     position: absolute;
@@ -730,6 +860,7 @@
     text-align: center;
     line-height: 16px;
     padding: 5px 0;
+    cursor: pointer;
 }
 .taskbar .TaskStatus .Clock:hover {
     background: rgba(255,255,255,.3)

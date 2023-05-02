@@ -17,21 +17,5 @@ export default {
 </script>
 
 <style scoped>
-.StartApp .item {
-    width: 85px;
-    height: 80px;
-    padding: 5px 2px 0 2px;
-    line-height: 16px;
-    color: #666;
-    font-size: 14px;
-    text-align: center;
-    display: inline-block;
-    cursor: pointer;
-}
-.StartApp .item img {
-    width: 54px;
-    height: 54px;
-    overflow-clip-margin: content-box;
-    overflow: clip;
-}
+
 </style>

@@ -157,7 +157,6 @@ export default {
             const name = this.username;
             const pass = encrypt(this.password)
             Login('api/Login',{name:name,pass:pass}).then(res=>{
-                
                 console.log(res);
                 if(res.status==200&&res.data!={}){
                     var data = res.data;

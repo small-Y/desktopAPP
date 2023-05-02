@@ -17,16 +17,11 @@
 
 import VueCookies from 'vue-cookies'
 import {getLogin} from '@/API/api.js'
+import toastr from "/public/static/Toaster/toastr.js";
 import { useRouter } from 'vue-router'
 const router = useRouter()
 setTimeout(() => {
     oneTimeLogin();
-    var timer;
-    clearInterval(timer==''?timer:'');
-    timer = setInterval(() => {
-        // console.log('实时登录验证')
-        oneTimeLogin();
-    }, 2000);
 }, 500);
 
 function oneTimeLogin() {
@@ -51,7 +46,7 @@ function oneTimeLogin() {
             }
         }
     },err=>{
-            console.log(err);
+      toastr.warning('服务器错误！'+err.response.statusText);
         
     });
 }
