@@ -17,7 +17,11 @@
                     </div>
                     <div class="rightbar" @mousedown="rightbarDown($event,index)" @mouseup="rightbarUp()"></div>
                 </div>
-                <div class="foot"></div>
+                <div class="foot">
+                    <div class="leftbuttombar" @mousedown="leftbuttombarDown($event,index)" @mouseup="leftbuttombarUp()"></div>
+                    <div class="buttombar" @mousedown="buttombarDown($event,index)" @mouseup="buttombarUp()"></div>
+                    <div class="rightbuttombar" @mousedown="rightbuttombarDown($event,index)" @mouseup="rightbuttombarUp()"></div>
+                </div>
                 <div class="mask"></div>
                 <div class="barMove" @mousedown="barMoveDown($event,index)" @mouseup="barMoveUp()"></div>
             </div>
@@ -251,6 +255,115 @@
                     width:width
                 })
                 this.beginbarRight = parseInt($("#dialogPlugin-"+this.index).css("width")) - event.clientX;
+            },
+            leftbuttombarDown:function (event,index) {
+                this.index=index;
+                var maxZindex = this.getDialogZindexMax();
+                maxZindex++;
+                $("#dialogPlugin-"+this.index).css({
+                    'z-index':maxZindex
+                });
+                $("#dialogPlugin-"+this.index).find(".winSize").css({
+                    'display':'block'
+                })
+                $("#dialogPlugin-"+this.index).find(".content").find('iframe').css({
+                    'display':'none'
+                })
+                this.beginbarLeft = event.clientX + parseInt($("#dialogPlugin-"+this.index).css("width"));
+                this.beginbarTop =parseInt($("#dialogPlugin-"+this.index).css("height")) - event.clientY ;
+                $(document).bind("mousemove", this.leftbuttombarGo);
+
+                this.setDialogPlugin(index);
+            },
+            leftbuttombarUp:function(){
+                $("#dialogPlugin-"+this.index).find(".winSize").css({
+                    'display':'none'
+                })
+                $("#dialogPlugin-"+this.index).find(".content").find('iframe').css({
+                    'display':'block'
+                })
+            },
+            leftbuttombarGo:function(event){
+                var left =  event.clientX;
+                var width = (this.beginbarLeft - event.clientX);
+                var height =  this.beginbarTop + event.clientY;
+                $("#dialogPlugin-"+this.index).css({
+                    left:left,
+                    width:width,
+                    height:height
+                })
+                this.beginbarLeft = event.clientX + parseInt($("#dialogPlugin-"+this.index).css("width"));
+                this.beginbarTop =parseInt($("#dialogPlugin-"+this.index).css("height")) - event.clientY ;
+            },
+            buttombarDown:function (event,index) {
+                this.index=index;
+                var maxZindex = this.getDialogZindexMax();
+                maxZindex++;
+                $("#dialogPlugin-"+this.index).css({
+                    'z-index':maxZindex
+                });
+                $("#dialogPlugin-"+this.index).find(".winSize").css({
+                    'display':'block'
+                })
+                $("#dialogPlugin-"+this.index).find(".content").find('iframe').css({
+                    'display':'none'
+                })
+                this.beginbarTop = parseInt($("#dialogPlugin-"+this.index).css("height")) - event.clientY ;
+                $(document).bind("mousemove", this.buttombarGo);
+
+                this.setDialogPlugin(index);
+            },
+            buttombarUp:function(){
+                $("#dialogPlugin-"+this.index).find(".winSize").css({
+                    'display':'none'
+                })
+                $("#dialogPlugin-"+this.index).find(".content").find('iframe').css({
+                    'display':'block'
+                })
+            },
+            buttombarGo:function(event){
+                var height =  this.beginbarTop + event.clientY;
+                $("#dialogPlugin-"+this.index).css({
+                    height:height
+                })
+                this.beginbarTop = parseInt($("#dialogPlugin-"+this.index).css("height")) - event.clientY ;
+            },
+            rightbuttombarDown:function (event,index) {
+                this.index=index;
+                var maxZindex = this.getDialogZindexMax();
+                maxZindex++;
+                $("#dialogPlugin-"+this.index).css({
+                    'z-index':maxZindex
+                });
+                $("#dialogPlugin-"+this.index).find(".winSize").css({
+                    'display':'block'
+                })
+                $("#dialogPlugin-"+this.index).find(".content").find('iframe').css({
+                    'display':'none'
+                })
+                this.beginbarRight = parseInt($("#dialogPlugin-"+this.index).css("width")) - event.clientX;
+                this.beginbarTop =parseInt($("#dialogPlugin-"+this.index).css("height")) - event.clientY ;
+                $(document).bind("mousemove", this.rightbuttombarGo);
+
+                this.setDialogPlugin(index);
+            },
+            rightbuttombarUp:function(){
+                $("#dialogPlugin-"+this.index).find(".winSize").css({
+                    'display':'none'
+                })
+                $("#dialogPlugin-"+this.index).find(".content").find('iframe').css({
+                    'display':'block'
+                })
+            },
+            rightbuttombarGo:function(event){
+                var width = (this.beginbarRight + event.clientX);
+                var height =  this.beginbarTop + event.clientY;
+                $("#dialogPlugin-"+this.index).css({
+                    width:width,
+                    height:height
+                })
+                this.beginbarRight = parseInt($("#dialogPlugin-"+this.index).css("width")) - event.clientX;
+                this.beginbarTop =parseInt($("#dialogPlugin-"+this.index).css("height")) - event.clientY ;
             },
             playSound:function(soundType){
                 var soundTag = document.getElementById(soundType+"_sound");

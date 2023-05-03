@@ -23,16 +23,17 @@
                             <div class="msgInput">
                                 <form name="form" action="" method="POST" enctype="multipart/form-data">
                                     请选择您的图片：<br>
-                                    <input id="fileToUpload" type="file" size="30" name="fileToUpload" accept="image/*">
+                                    <input id="fileToUpload" type="file" size="30" name="" accept="image/*" @change="$emit('changeUserPic',$event)">
                                 </form>
                             </div>
                         </div>
                         <div v-else-if="menuType=='userPass'">
                             <div class="msgPass">
                                 旧的密码：<input type="password" id="oldPass"><br>
-                                新的密码：<input type="password" id="newPass1"><br>
-                                确认密码：<input type="password" id="newPass2">
+                                新的密码：<input type="password" id="newPass1" v-model="changeNewPass1"><br>
+                                确认密码：<input type="password" id="newPass2" v-model="changeNewPass2">
                             </div>
+                            <div class="LVCheck"></div>
                         </div>
                         <div class="operate">
                             <a id="okBtn" class="inputButton" @click="$emit('clickOk')"> 确 定 </a>
@@ -62,7 +63,10 @@ export default {
             moveTop:366,
             beginLeft:0,
             beginTop:0,
-            userSign:''
+            userSign:'',
+            changeNewPass1:'',
+            changeNewPass2:'',
+            level:0
         }
     },
     props:['title','width','height','showDialog','menuType'],
@@ -86,7 +90,36 @@ export default {
         init:function(){
             var userData = VueCookies.get('TUser');
             this.userSign = userData.userSign;
+        },
+        checkPass:function(pass){
+            this.level=0;
+            if(pass.length8 >= 8){
+                this.level++;
+            }
+            if(/\d/.test(pass)){
+                this.level++;
+            }
+            if(/[a-z]/.test(pass)){
+                this.level++;
+            }
+            if(/[A-Z]/.test(pass)){
+                this.level++;
+            }
+            if(/\W/.test(pass)){
+                this.level++;
+            }
         }
+    },
+    watch: {
+        changeNewPass1:function (newchangeNewPass1) {
+            this.checkPass(newchangeNewPass1);
+        },
+        changeNewPass2:function (newchangeNewPass2) {
+            this.checkPass(newchangeNewPass2);
+        },
+        level:function (newlevel) {
+            console.log(newlevel)
+        },
     },
     mounted() {
         this.init()
@@ -94,7 +127,11 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+.LvCheck::before {
+    width: 100%;
+    background: #0f0;
+    filter: drop-shadow(0px 0px 5px #0f0) drop-shadow(0px 0px 10px #0f0) drop-shadow(0px 0px 20px #0f0);
+}
 </style>
   

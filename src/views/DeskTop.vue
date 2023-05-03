@@ -126,7 +126,7 @@
                 <div>{{ymd}}&nbsp;{{ CWeek }}</div><div class="day">{{ day }}</div><div style="line-height: 22px;">{{ lunar }}<br>{{ lunarYear }}<br>{{ zodiac }}&nbsp;<br>{{ solarTerm }}</div>
             </div>		
           </div>
-          <div class="Picture" @click="clickUserMenu"><img src="/static/images/user/new.png"></div>
+          <div class="Picture" @click="clickUserMenu"><img :src="userHeadPic"></div>
           <div class="UserMenu" v-show="showUserMenu">			
             <span class="pointer"></span>			
               <ul>				
@@ -160,8 +160,9 @@
     :showDialog="showDialog" 
     :menuType="menuType"
     @click-Ok="clickDialogOk"
-     @click-Cancel="clickCancel" 
-     @click-close="clickCloseDialog"/>
+    @click-Cancel="clickCancel" 
+    @click-close="clickCloseDialog"
+    @change-UserPic="uploadUserPic"/>
     <DialogPagePlugin 
     :width="dialogPluginWidth" 
     :height="dialogPluginHeight" 
@@ -182,7 +183,8 @@
     import { getLunar } from 'chinese-lunar-calendar'
     import $ from "jquery";
     import toastr from "/public/static/Toaster/toastr.js";
-    import {getLogin,getCityList,postLoginOut,readConfig,postUserSign,getThemeList,postSetTheme,postSetWrapper} from '../API/api.js'
+    import {getLogin,getCityList,postLoginOut,readConfig,postUserSign,getThemeList,postSetTheme,postSetWrapper,uploadPic,setUserPass} from '../API/api.js'
+    import {encrypt} from '@/common/crypto'
     import VueCookies from 'vue-cookies'
     import DialogPage from "@/components/DialogPage.vue";
     import DialogPagePlugin from "@/components/DialogPlugin.vue";
@@ -193,11 +195,10 @@
     import WidgetList from "@/components/WidgetList.vue";
     import ThemeList from "@/components/ThemeList.vue";
     import WrapperList from "@/components/WrapperList.vue";
-    // import { useRouter } from 'vue-router'
-    // const router = useRouter()
 
     const wrapperImg=ref();
     const wrapperImgType=ref(true);
+    const userHeadPic=ref('/static/images/user/new.png');
 
     const menuType=ref();
     const dialogTitle=ref();
@@ -267,6 +268,8 @@
     const showSearch=ref(false)
     const showAppListTab1=ref(true)
     const showThemeListTab1=ref(true)
+
+    const userPic=ref();
 
     //阻止右键点击事件
     document.addEventListener('mousedown',function(e){
@@ -513,14 +516,15 @@
         showPannelTask.value=false;
     }
     function clickDialogOk(){
-        showDialog.value=false;
         var userData = VueCookies.get('TUser');
         var username = userData.username;
+        var userID = userData.userID;
         
         if(menuType.value=='userSign'){
             var userSign = $('#msgInput').val();
             console.log(userSign)
             postUserSign('api/postUserSign',{username:username,userSign:userSign}).then(res=>{
+                showDialog.value=false;
                 console.log(res);
                 if(res.status==200){
                     toastr.success('用户签名修改成功！')
@@ -532,10 +536,46 @@
             });
         }else if(menuType.value=='loginOut'){
             postLoginOut('api/LoginOut',{username:username}).then(res=>{
+                showDialog.value=false;
                 console.log(res);
                 console.log('注销登录！')
                 location.href = "/"
                 VueCookies.remove('TUser')
+            },err=>{
+                toastr.warning('服务器错误！'+err.response.statusText);
+            });
+        }else if(menuType.value=='userPic'){
+            showDialog.value=false;
+            console.log(userPic.value)
+            if(userPic.value){
+                var fileData = userPic.value;
+                uploadPic('api/uploadPic?userID='+userID,fileData).then(res=>{
+                    console.log(res);
+                    if(res.data.flag){
+                        toastr.success('用户头像修改成功！')
+                    }
+                },err=>{
+                    toastr.warning('服务器错误！'+err.response.statusText);
+                });
+            }else{
+                toastr.warning('错误操作！请先选择图片.');
+            }
+        }else if(menuType.value=='userPass'){
+            var oldPass = $('#oldPass').val();
+            var newPass1 = $('#newPass1').val();
+            var newPass2 = $('#newPass2').val();
+            var checkPass = passFiter(oldPass,newPass1,newPass2);
+            if(!checkPass){
+                return false;
+            }
+            oldPass = encrypt(oldPass);
+            const pass = encrypt(newPass1);
+            setUserPass('api/setUserPass',{username:username,oldPass:oldPass,pass:pass}).then(res=>{
+                showDialog.value=false;
+                console.log(res);
+                if(res.data.flag){
+                    toastr.success('用户密码修改成功！')
+                }
             },err=>{
                 toastr.warning('服务器错误！'+err.response.statusText);
             });
@@ -563,6 +603,14 @@
         showUserMenu.value=false;
         menuType.value='userPic';
         playSound('rest')
+    }
+    function uploadUserPic(e){
+        console.log(e.target.files[0])
+        var file = e.target.files[0];
+        const formData = new FormData();
+        formData.append("file", file);
+        console.log(formData)
+        userPic.value = formData;
     }
     //修改用户密码
     function changeUserPass(){
@@ -793,6 +841,45 @@
         const newArr = arrObj.filter(value => !map.has(value.appID) && map.set(value.appID, 1));
         return newArr;
     }
+    function passFiter(oldPass,newPass1,newPass2){
+        var level = 0;
+        if(oldPass==''){
+            toastr.warning('必须输入原密码！','修改密码！');
+            return false;
+        }
+        if(newPass1==''){
+            toastr.warning('请输入密码！','修改密码！');
+            return false;
+        }
+        if(newPass1!=newPass2){
+            toastr.warning('请再次输入密码！','修改密码！');
+            return false;
+        }
+        if(newPass1!=newPass2){
+            toastr.warning('俩次密码输入不一致！','修改密码！');
+            return false;
+        }
+        if(newPass1.length8 < 8){
+            return level;
+        }
+        if(/\d/.test(newPass1)){
+            level++;
+        }
+        if(/[a-z]/.test(newPass1)){
+            level++;
+        }
+        if(/[A-Z]/.test(newPass1)){
+            level++;
+        }
+        if(/\W/.test(newPass1)){
+            level++;
+        }
+        if(level<3){
+            toastr.warning('新密码强度太弱,请使用8位及以上的数字+字母+特殊符号组合！','修改密码！');
+            return false;
+        }
+        return true;
+    }
 
     // 
     function oneTimeLogin() {
@@ -811,6 +898,11 @@
                 }else{
                     initClock();
                     $("#desktopFrame1_Panel_Task_Status").find(".Clock").html(Time1.value+'<br>'+Time2.value+CWeek.value)
+                    if(!data.userPic){
+                        userHeadPic.value='/static/images/user/new.png'
+                    }else{
+                        userHeadPic.value=data.userPic;
+                    }
                 }
             }
         },err=>{

@@ -31,6 +31,12 @@ export function postSetTheme(url,params){
 export function postSetWrapper(url,params){
     return axios.post(url,params);
 }
+export function uploadPic(url,params){
+    return axios.post(url,params);
+}
+export function setUserPass(url,params){
+    return axios.post(url,params);
+}
 
 export default {
     getCityList,
@@ -41,7 +47,9 @@ export default {
     postUserSign,
     getThemeList,
     postSetTheme,
-    postSetWrapper
+    postSetWrapper,
+    uploadPic,
+    setUserPass
 }
 
 
