@@ -16,7 +16,8 @@
                             帐 号：<input type="text" v-model="username" name="userName" id="userName" class="loginText" placeholder="请输入帐号" autocomplete="on" required="required">
                         </div>	
                         <div class="loginPass">
-                            口 令：<input type="password" v-model="password" name="passWord" id="passWord" class="loginText" placeholder="请输入口令" required="required">
+                            口 令：<input v-if="changePassword" type="password" v-model="password" name="passWord" id="passWord" class="loginText" placeholder="请输入口令" required="required">
+                            <input v-else type="text" onfocus="this.type='password'" v-model="password" name="passWord" id="passWord" class="loginText" placeholder="请输入口令" required="required">
                         </div>	
                         <div id="loginFrame_Panel_Info" class="loginInfo">&nbsp;</div>	
                         <div id="loginFrame_Panel_Slider" class="loginSlider">
@@ -58,8 +59,7 @@ export default {
             min : 0,
             max : 218,
             msgOpt : 1,
-            username:'',
-            password:'',
+            changePassword:true
         }
     },
     created(){
@@ -80,6 +80,14 @@ export default {
             this.minutes = now.getMinutes();
             this.day = now.getDay();
             this.week = now.getSysWeek();
+            //
+            var userData = VueCookies.get('TUser');
+            console.log(userData)
+            if(userData=='null'){
+                console.log(userData)
+                this.changePassword=false;
+            }
+            
         },
         initHandle:function () {
             $('#loginFrame_Panel_Form').css({'left':'50%','opacity':1,'transition-property':'all','transition-duration':'0s','transition-timing-function':'ease'})
@@ -137,25 +145,27 @@ export default {
             }
         },
         login:function () {
-            if(this.username==''){
+            var username = $("#userName").val();
+            var password = $("#passWord").val();
+            if(username==''){
                 toastr.warning('请输入您的用户名！')
                 $("#userName").focus();
                 this.playSound('warn');
             }else{
-                if(this.password==''){
+                if(password==''){
                     toastr.warning('请输入您的密码！')
                     $("#password").focus();
                     this.playSound('warn');
                 }else{
                     $('#loginFrame_Panel_Load').css('display','block')
-                    this.postLogin();
+                    this.postLogin(username,password);
                 }
             }
         },
-        postLogin:function () {
+        postLogin:function (username,password) {
             //进入桌面
-            const name = this.username;
-            const pass = encrypt(this.password)
+            const name = username;
+            const pass = encrypt(password)
             Login('api/Login',{name:name,pass:pass}).then(res=>{
                 console.log(res);
                 if(res.status==200&&res.data!={}){

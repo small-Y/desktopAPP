@@ -16,6 +16,12 @@
                             </div>
                             <div class="msgText">   您确定要注销ThingsOS桌面吗？</div>
                         </div>
+                        <div v-else-if="menuType=='DoLock'">
+                            <div class="msgIcon">
+                                <img src="/static/images/desktop/query.png" alt="" width="64" height="64" border="0">
+                            </div>
+                            <div class="msgText">   您确定要锁定ThingsOS桌面吗？</div>
+                        </div>
                         <div  v-else-if="menuType=='userSign'">
                             <div class="msgInput">请输入您的信息：<br><input v-model="userSign" type="text" id="msgInput"></div>
                         </div>

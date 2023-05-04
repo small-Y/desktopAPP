@@ -1,5 +1,5 @@
 <template>
-  <div id="desktopcontiner" class="desktop">
+  <div id="desktopcontiner" class="desktop" @contextmenu.prevent>
     <div class="desktopWrapper">
       <img :src="wrapperImg" alt="壁纸" v-if="wrapperImgType">
     </div>
@@ -14,8 +14,8 @@
                     <StartApp :installApp="installApp" @click-StartApp="clickStartApp"/>
                 </div>
                 <div class="UserOperate">
-                  <div class="DoLock"><i class="fa fa-lock"></i>&nbsp;锁 定</div>
-                  <div class="Logout"><i class="fa fa-sign-out"></i>&nbsp;注 销</div>
+                  <div class="DoLock" @click="DoLock"><i class="fa fa-lock"></i>&nbsp;锁 定</div>
+                  <div class="Logout" @click="LiginOut"><i class="fa fa-sign-out"></i>&nbsp;注 销</div>
                 </div>
                 <span class="pointer"></span>
               </div>
@@ -271,13 +271,6 @@
 
     const userPic=ref();
 
-    //阻止右键点击事件
-    document.addEventListener('mousedown',function(e){
-        if(e.button==2){
-            return false;
-        }
-    })
-
     function clickDesk() {
         showStartMenu.value=false
         showAppMenu.value=false
@@ -503,9 +496,21 @@
         height.value='155px'
         showDialog.value=true;
         showUserMenu.value=false;
+        showStartMenu.value=false
         menuType.value='loginOut';
         playSound('rest')
     }
+    function DoLock(){
+        dialogTitle.value='锁定桌面';
+        width.value='400px';
+        height.value='155px'
+        showDialog.value=true;
+        showUserMenu.value=false;
+        showStartMenu.value=false
+        menuType.value='DoLock';
+        playSound('rest')
+    }
+    // diolog 操作
     function clickCancel(){
         showDialog.value=false;
         playSound('close')
@@ -544,6 +549,10 @@
             },err=>{
                 toastr.warning('服务器错误！'+err.response.statusText);
             });
+        }else if(menuType.value=='DoLock'){
+            console.log('锁定桌面！')
+            VueCookies.set('TUser',null)
+            location.href = "/Login"
         }else if(menuType.value=='userPic'){
             showDialog.value=false;
             console.log(userPic.value)
@@ -623,7 +632,7 @@
         playSound('rest')
     }
 
-    // diolog 操作
+    // diologPlugin 操作
     function fullScreen(){
         showUserMenu.value=false;
         playSound('rest')
