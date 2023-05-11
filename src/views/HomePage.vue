@@ -25,12 +25,7 @@ setTimeout(() => {
 }, 500);
 
 function oneTimeLogin() {
-    var userData = VueCookies.get('TUser');
-    var username = '';
-    if(userData) {
-        username = userData.username;
-    }
-    getLogin('api/getLogin',{username:username}).then(res=>{
+    getLogin('api/getLogin').then(res=>{
         if(JSON.stringify(res.data) == "{}"){
             // console.log('/')
             router.push({ name: 'Login'})
@@ -39,10 +34,10 @@ function oneTimeLogin() {
             var data = res.data;
             if(data.loginStatus){
               router.push({name: 'DeskTop' })
-              VueCookies.set('TUser',data)
+              VueCookies.set('TUser',data.username)
             }else{
               router.push({name: 'Login' })
-              VueCookies.set('TUser',data)
+              VueCookies.set('TUser',data.username)
             }
         }
     },err=>{

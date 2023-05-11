@@ -59,15 +59,9 @@ export default {
             min : 0,
             max : 218,
             msgOpt : 1,
-            changePassword:true
-        }
-    },
-    created(){
-        var userData = VueCookies.get('TUser');
-        // console.log(userData)
-        if(userData.loginStatus){
-            console.log('/')
-            location.href = "/DeskTop"
+            changePassword:true,
+            username:'',
+            password:''
         }
     },
     methods: {
@@ -81,10 +75,8 @@ export default {
             this.day = now.getDay();
             this.week = now.getSysWeek();
             //
-            var userData = VueCookies.get('TUser');
-            console.log(userData)
-            if(userData=='null'){
-                console.log(userData)
+            var username = VueCookies.get('TUser');
+            if(username=='null'){
                 this.changePassword=false;
             }
             
@@ -134,7 +126,7 @@ export default {
             var getLunarDay = getLunar(this.year, this.month, this.date)
             var solarTerm = getLunarDay.solarTerm;
             if(!solarTerm){
-                this.tadayPic='wrapper/day'+this.day+'.jpg';
+                this.tadayPic='wrapper/day'+(this.day+1)+'.jpg';
             }else{
                 var i = trans.length;
                 while (i--) {
@@ -145,8 +137,8 @@ export default {
             }
         },
         login:function () {
-            var username = $("#userName").val();
-            var password = $("#passWord").val();
+            var username = this.username;
+            var password = this.password;
             if(username==''){
                 toastr.warning('请输入您的用户名！')
                 $("#userName").focus();
@@ -169,11 +161,17 @@ export default {
             Login('api/Login',{name:name,pass:pass}).then(res=>{
                 console.log(res);
                 if(res.status==200&&res.data!={}){
-                    var data = res.data;
-                    console.log('已登录，进入桌面！')
-                    VueCookies.set('TUser',data)
-                    this.playSound('desktop');
-                    location.href = "/DeskTop"
+                    if(res.data.flag){
+                        var data = res.data;
+                        console.log('已登录，进入桌面！')
+                        VueCookies.set('TUser',data.username)
+                        this.playSound('desktop');
+                        location.href = "/DeskTop"
+                    }else{
+                        this.playSound('error');
+                        $('#loginFrame_Panel_Load').css('display','none')   
+                        toastr.warning(res.data.info,'用户登录')
+                    }
                 }
                 },err=>{
                     console.log(err);

@@ -95,7 +95,10 @@ export default {
         },
         init:function(){
             var userData = VueCookies.get('TUser');
-            this.userSign = userData.userSign;
+            if(userData){
+                this.userSign = userData.userSign;
+            }
+            
         },
         checkPass:function(pass){
             this.level=0;

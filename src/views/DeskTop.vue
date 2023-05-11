@@ -1,7 +1,7 @@
 <template>
   <div id="desktopcontiner" class="desktop" @contextmenu.prevent>
     <div class="desktopWrapper">
-      <img :src="wrapperImg" alt="壁纸" v-if="wrapperImgType">
+      <img :src="wrapperImg" alt="" v-if="wrapperImgType">
     </div>
     <div id="desktopFrame1_Panel" class="desktopPanel">
       <div id="desktopFrame1_Panel_Task" class="taskbar">
@@ -183,7 +183,7 @@
     import { getLunar } from 'chinese-lunar-calendar'
     import $ from "jquery";
     import toastr from "/public/static/Toaster/toastr.js";
-    import {getLogin,getCityList,postLoginOut,readConfig,postUserSign,getThemeList,postSetTheme,postSetWrapper,uploadPic,setUserPass} from '../API/api.js'
+    import {getLogin,postLoginOut,readConfig,postUserSign,getThemeList,postSetTheme,postSetWrapper,uploadPic,setUserPass,getWeather} from '../API/api.js'
     import {encrypt} from '@/common/crypto'
     import VueCookies from 'vue-cookies'
     import DialogPage from "@/components/DialogPage.vue";
@@ -195,6 +195,8 @@
     import WidgetList from "@/components/WidgetList.vue";
     import ThemeList from "@/components/ThemeList.vue";
     import WrapperList from "@/components/WrapperList.vue";
+
+    var UData;
 
     const wrapperImg=ref();
     const wrapperImgType=ref(true);
@@ -395,97 +397,49 @@
                 brandText: "ThingsLabs"
             });
     }
-    function getCityTag(){
-        if(!weatherCity.value){
-            // 172.29.77.106
-            // 192.168.1.109
-            // 获取IP
-            var ip = window.location.host.split(":")[0];
-            if(ip.split('.')[0]=='172'||ip.split('.')[0]=='192'){
-                ip='myip';
+    function initWeather(){
+        //封装获取今日天气
+        getWeather('api/weather/now').then(res=>{
+            if(res.status==200){
+                ifShowWeatherListToday.value=true;
+                temp.value=res.data.temp
+                weatherPng.value=res.data.icon
+                weatherText.value=res.data.text
+                weatherWindDir.value=res.data.windDir
+                weatherFeelsLike.value='体感温度'+res.data.feelsLike+'℃'
+                weatherHumidity.value='湿度'+res.data.humidity+'%'
+            }else{
+                ifShowWeatherListToday.value=false;
+                weatherPng.value='99';
             }
-            // 获取城市
-            var urlip = "/apil";
-            $.ajax({
-                url:urlip,
-                type:'POST',
-                data:{
-                    ip: ip,
-                    accessKey: 'alibaba-inc'
-                },
-                success:function(res){
-                    console.log(res);
-                }
-            })
-        }
-
-        // 获取城市
-        getCityList('/static/deskData/CityList.csv').then(res=>{
-            var cityTag='';
-            var csvList = res.data.split('\r\n')
-            for (let i = 0; i < csvList.length; i++) {
-                const ele = csvList[i];
-                if(ele.indexOf(weatherCity.value)!=-1){
-                    if(ele.split(',')[2]==weatherCity.value){
-                        cityTag=ele.split(',')[0];
-                    }
-                }
-            }
-            initWeather(cityTag);
         },err=>{
             toastr.warning('服务器错误！'+err.response.statusText);
-        
         });
-    }
-    function initWeather(cityTag){
-        // 获取今天的天气
-        var urlnow = 'https://devapi.qweather.com/v7/weather/now?location='+cityTag+'&key=3b94e0eed8624dd6867f5b441fec64e5'
-        $.ajax({
-            url:urlnow,
-            type:'GET',
-            success:function(res){
-                if(res.code==200){
-                    ifShowWeatherListToday.value=true;
-                    temp.value=res.now.temp
-                    weatherPng.value=res.now.icon
-                    weatherText.value=res.now.text
-                    weatherWindDir.value=res.now.windDir
-                    weatherFeelsLike.value='体感温度'+res.now.feelsLike+'℃'
-                    weatherHumidity.value='湿度'+res.now.humidity+'%'
-                }else{
-                    ifShowWeatherListToday.value=false;
-                    weatherPng.value='99';
-                }
+        //封装获取三天天气
+        getWeather('api/weather/3d').then(res=>{
+            if(res.status==200){
+                ifShowWeatherList.value=true
+                // 今天
+                weatherTodayImg.value=res.data[0].iconDay;
+                weatherTodayTempMin.value=res.data[0].tempMin;
+                weatherTodayTempMax.value=res.data[0].tempMax;
+                weatherTodayTemptextDay.value=res.data[0].textDay;
+                // 明天
+                weatherMingImg.value=res.data[1].iconDay;
+                weatherMingTempMin.value=res.data[1].tempMin;
+                weatherMingTempMax.value=res.data[1].tempMax;
+                weatherMingTemptextDay.value=res.data[1].textDay;
+                // 后天
+                weatherHouImg.value=res.data[2].iconDay;
+                weatherHouTempMin.value=res.data[2].tempMin;
+                weatherHouTempMax.value=res.data[2].tempMax;
+                weatherHouTemptextDay.value=res.data[2].textDay;
+            }else{
+                ifShowWeatherList.value=false
             }
-        })
-        // 获取三天的天气
-        var url3d = 'https://devapi.qweather.com/v7/weather/3d?location='+cityTag+'&key=3b94e0eed8624dd6867f5b441fec64e5'
-        $.ajax({
-            url:url3d,
-            type:'GET',
-            success:function(res){
-                if(res.code==200){
-                    ifShowWeatherList.value=true
-                    // 今天
-                    weatherTodayImg.value=res.daily[0].iconDay;
-                    weatherTodayTempMin.value=res.daily[0].tempMin;
-                    weatherTodayTempMax.value=res.daily[0].tempMax;
-                    weatherTodayTemptextDay.value=res.daily[0].textDay;
-                    // 明天
-                    weatherMingImg.value=res.daily[1].iconDay;
-                    weatherMingTempMin.value=res.daily[1].tempMin;
-                    weatherMingTempMax.value=res.daily[1].tempMax;
-                    weatherMingTemptextDay.value=res.daily[1].textDay;
-                    // 后天
-                    weatherHouImg.value=res.daily[2].iconDay;
-                    weatherHouTempMin.value=res.daily[2].tempMin;
-                    weatherHouTempMax.value=res.daily[2].tempMax;
-                    weatherHouTemptextDay.value=res.daily[2].textDay;
-                }else{
-                    ifShowWeatherList.value=false
-                }
-            }
-        })
+        },err=>{
+            toastr.warning('服务器错误！'+err.response.statusText);
+        });
     }
 
     // 用户操作
@@ -521,20 +475,18 @@
         showPannelTask.value=false;
     }
     function clickDialogOk(){
-        var userData = VueCookies.get('TUser');
-        var username = userData.username;
-        var userID = userData.userID;
+        var username = UData.username;
         
         if(menuType.value=='userSign'){
             var userSign = $('#msgInput').val();
             console.log(userSign)
-            postUserSign('api/postUserSign',{username:username,userSign:userSign}).then(res=>{
+            postUserSign('api/setUserSign',{userSign:userSign}).then(res=>{
                 showDialog.value=false;
                 console.log(res);
                 if(res.status==200){
                     toastr.success('用户签名修改成功！')
                     var data = res.data;
-                    VueCookies.set('TUser',data)
+                    UData = data;
                 }
             },err=>{
                 toastr.warning('服务器错误！'+err.response.statusText);
@@ -558,7 +510,7 @@
             console.log(userPic.value)
             if(userPic.value){
                 var fileData = userPic.value;
-                uploadPic('api/uploadPic?userID='+userID,fileData).then(res=>{
+                uploadPic('api/uploadPic',fileData).then(res=>{
                     console.log(res);
                     if(res.data.flag){
                         toastr.success('用户头像修改成功！')
@@ -617,7 +569,7 @@
         console.log(e.target.files[0])
         var file = e.target.files[0];
         const formData = new FormData();
-        formData.append("file", file);
+        formData.append("file", file);   //这里没有成功
         console.log(formData)
         userPic.value = formData;
     }
@@ -745,8 +697,7 @@
 
     // 主题操作
     function clickSetTheme(themeName){
-        var userData = VueCookies.get('TUser');
-        var userID = userData.userID;
+        var userID = UData.userID;
         postSetTheme('api/setTheme',{userID:userID,themeName:themeName}).then(res=>{
             console.log(res);
             if(res.data.flag){
@@ -762,22 +713,19 @@
     }
     function clickSetWrapper(fileName){
         wrapperImgType.value=true;
-        var userData = VueCookies.get('TUser');
-        var userID = userData.userID;
+        var userID = UData.userID;
         setWrapper(userID,fileName);
     }
     function clickSetWrapper1(fileName){
         wrapperImgType.value=false;
-        var userData = VueCookies.get('TUser');
-        var userID = userData.userID;
+        var userID = UData.userID;
         setWrapper(userID,fileName);
         var fileUrl = "/static/images/wrapper/"+fileName;
         $("#desktopcontiner").find(".desktopWrapper").css("background", "transparent url(" + fileUrl + ") repeat center top")
     }
     function clickSetWrapper2(fileName){
         wrapperImgType.value=true;
-        var userData = VueCookies.get('TUser');
-        var userID = userData.userID;
+        var userID = UData.userID;
         setWrapper(userID,fileName);
     }
     function setWrapper(userID,fileName){
@@ -860,7 +808,7 @@
             toastr.warning('请输入密码！','修改密码！');
             return false;
         }
-        if(newPass1!=newPass2){
+        if(newPass2==''){
             toastr.warning('请再次输入密码！','修改密码！');
             return false;
         }
@@ -892,19 +840,17 @@
 
     // 
     function oneTimeLogin() {
-        var userData = VueCookies.get('TUser');
-        var username = '';
-        if(userData) {
-            username = userData.username;
-        }else{
+        var username = VueCookies.get('TUser');
+        if(!username) {
             location.href = "/"
         }
-        getLogin('api/getLogin',{username:username}).then(res=>{
+        getLogin('api/getLogin').then(res=>{
             if(res.status==200){
                 var data = res.data;
                 if(!data.loginStatus){
                     location.href = "/"
                 }else{
+                    UData=res.data;
                     initClock();
                     $("#desktopFrame1_Panel_Task_Status").find(".Clock").html(Time1.value+'<br>'+Time2.value+CWeek.value)
                     if(!data.userPic){
@@ -921,44 +867,70 @@
     }
 
     function init(){
-        var timer;
-        clearInterval(timer==''?timer:'');
-        timer = setInterval(() => {
-            // console.log('实时登录验证')
-            oneTimeLogin();
-        }, 2000);
-        // 
-        var userData = VueCookies.get('TUser');
-        var userID = userData.userID;
-        readConfig('api/readConfig',{userID:userID}).then(res=>{
-            wrapperImgType.value = res.data.wrapperImgType;
-            wrapperImg.value = res.data.wrapperImg;
-            installApp.value = res.data.installApp;
-            userApp.value = res.data.userApp;
-            installWidget.value = res.data.installWidget;
-            if(res.data.system.myTheme!='default'){
-                document.getElementById("mytheme").href ="/Theme/"+ res.data.system.myTheme + "/theme.css"
-            }
-            if(!res.data.wrapperImgType){
-                $("#desktopcontiner").find(".desktopWrapper").css("background", "transparent url(" + res.data.wrapperImg + ") repeat center top")
-            }
+        var username = VueCookies.get('TUser');
+        if(!username) {
+            location.href = "/"
+        }
+        getLogin('api/getLogin').then(res=>{
+            if(res.status==200){
+                var data = res.data;
+                if(!data.loginStatus){
+                    location.href = "/"
+                }else{
+                    UData=res.data;
+                    initClock();
+                    $("#desktopFrame1_Panel_Task_Status").find(".Clock").html(Time1.value+'<br>'+Time2.value+CWeek.value)
+                    if(!data.userPic){
+                        userHeadPic.value='/static/images/user/new.png'
+                    }else{
+                        userHeadPic.value=data.userPic;
+                    }
+                    //
+                    var timer;
+                    clearInterval(timer==''?timer:'');
+                    timer = setInterval(() => {
+                        // console.log('实时登录验证')
+                        oneTimeLogin();
+                    }, 2000);
+                    // 
+                    var userID = UData.userID;
+                    readConfig('api/readConfig',{userID:userID}).then(res=>{
+                        wrapperImgType.value = res.data.wrapperImgType;
+                        wrapperImg.value = res.data.wrapperImg;
+                        installApp.value = res.data.installApp;
+                        userApp.value = res.data.userApp;
+                        installWidget.value = res.data.installWidget;
+                        if(res.data.system.myTheme!='default'){
+                            document.getElementById("mytheme").href ="/Theme/"+ res.data.system.myTheme + "/theme.css"
+                        }
+                        if(!res.data.wrapperImgType){
+                            $("#desktopcontiner").find(".desktopWrapper").css("background", "transparent url(" + res.data.wrapperImg + ") repeat center top")
+                        }
 
+                    },err=>{
+                        toastr.warning('服务器错误！'+err.response.statusText);
+                    });
+                    getThemeList('api/getThemeList').then(res=>{
+                        TList.value = res.data.themeList;
+                        WList.value = res.data.wrapperList;
+                    },err=>{
+                        toastr.warning('服务器错误！'+err.response.statusText);
+                    });
+                }
+            }
         },err=>{
             toastr.warning('服务器错误！'+err.response.statusText);
+            $("#desktopFrame1_Panel_Task_Status").find(".Clock").html('<font color="#ffff00">网络脱机</br>正在重新连接...</font>')
         });
-        getThemeList('api/getThemeList').then(res=>{
-            TList.value = res.data.themeList;
-            WList.value = res.data.wrapperList;
-        },err=>{
-            toastr.warning('服务器错误！'+err.response.statusText);
-        });
+
+       
     }
 
     onMounted(()=>{
         init();
         initClock();
         initClockList();
-        getCityTag();
+        initWeather();
         playSound('desktop')
     })
 </script>

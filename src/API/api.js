@@ -10,9 +10,6 @@ export function getLogin(url,params){
 export function Login(url,params){
     return axios.post(url,params);
 }
-export function getCityList(url){
-    return axios.get(url);
-}
 export function postLoginOut(url,params){
     return axios.post(url,params);
 }
@@ -37,9 +34,11 @@ export function uploadPic(url,params){
 export function setUserPass(url,params){
     return axios.post(url,params);
 }
+export function getWeather(url,params){
+    return axios.post(url,params);
+}
 
 export default {
-    getCityList,
     getLogin,
     postLoginOut,
     Login,
@@ -49,7 +48,8 @@ export default {
     postSetTheme,
     postSetWrapper,
     uploadPic,
-    setUserPass
+    setUserPass,
+    getWeather
 }
 
 
