@@ -3,7 +3,7 @@
         <div id="DialogWidget_item" v-for="(item, index) in widgetApp" :key="item.appID">
             <div :id="'DialogWidget-'+index" class="widget" :style="{'width':item.width + 'px','height':item.height + 'px','z-index':this.zindex+index+1,'right':50 + ((index+1)*10) +'px','z-index':400 + (index+1)}">
                 <div class="content">
-                    <iframe :src="item.appUrl+'/index.html'" frameborder="no" scrolling="no" allowtransparency="true" hidefocus marginwidth="0" marginheight="0"></iframe>
+                    <iframe :src="item.appUrl+'index.html'" frameborder="no" scrolling="no" allowtransparency="true" hidefocus marginwidth="0" marginheight="0"></iframe>
                 </div>
                 <div class="bar">
                     <div class="close" @click="$emit('clickWidgetClose',item.appID)"></div>
@@ -21,7 +21,7 @@
         name: 'DialogWidget',
         data() {
             return {
-
+                zindex:400
             }
         },
         props:['showDialogWidget','widgetApp'],

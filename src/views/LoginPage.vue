@@ -187,6 +187,9 @@ export default {
         this.init();
         this.initHandle();
         this.getTodayPic();
+        setInterval(() => {
+            this.init();
+        }, 2000);
     }
 }
 </script>
